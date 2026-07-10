@@ -1,0 +1,427 @@
+openapi: 3.0.3
+
+info:
+  title: Party Authentication - BHD
+  description: API used to validate a customer for authentication purposes.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /PartyAuthentication/Pin/Evaluate:
+    post:
+      tags:
+        - BQ - Pin
+      summary: Evaluate PIN
+      description: Evaluate customer authenticity using a customer PIN.
+      operationId: EvaluatePin
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluatePinRequest'
+
+      responses:
+        '200':
+          description: PIN successfully evaluated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluatePinResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /PartyAuthentication/Biometric/Evaluate:
+    post:
+      tags:
+        - BQ - Biometric
+      summary: Evaluate customer biometric authentication
+      description: Evaluate customer biometric validation and terms and conditions acceptance.
+      operationId: EvaluateBiometric
+
+      parameters:
+
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateBiometricRequest'
+
+      responses:
+        '200':
+          description: Biometric evaluation successfully processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluateBiometricResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    EvaluatePinRequest:
+      type: object
+      description: Request used to validate a customer PIN.
+      required:
+        - PartyAuthenticationAssessment
+        - Pin
+      properties:
+        PartyAuthenticationAssessment:
+          $ref: '#/components/schemas/PartyAuthenticationAssessment'
+        Pin:
+          $ref: '#/components/schemas/Pin'
+
+    PartyAuthenticationAssessment:
+      type: object
+      description: Authentication assessment information for the customer.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+
+    PartyReference:
+      type: object
+      description: Reference to the customer being authenticated.
+      properties:
+        UserName:
+          $ref: '#/components/schemas/UserName'
+
+    UserName:
+      type: string
+      description: User identifier.
+      example: "DNI299875349BA"
+
+    Pin:
+      type: object
+      description: Customer PIN information.
+      properties:
+        AuthenticationPinPresentedValue:
+          type: string
+          description: PIN entered by the customer.
+          example: "1234"
+
+
+    EvaluatePinResponse:
+      type: object
+      description: Successful PIN evaluation response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/EvaluatePinData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-19T15:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456"
+
+    EvaluatePinData:
+      type: object
+      description: PIN evaluation result.
+      properties:
+        Message:
+          type: string
+          example: "PIN successfully validated"
+
+
+
+    EvaluateBiometricRequest:
+      type: object
+      description: Request used to evaluate biometric validation and customer acceptance.
+      properties:
+        Biometric:
+          $ref: '#/components/schemas/BiometricEvaluation'
+
+        TermsAndConditionsAcceptance:
+          $ref: '#/components/schemas/TermsAndConditionsAcceptance'
+
+    BiometricEvaluation:
+      type: object
+      description: Customer biometric evaluation result.
+      properties:
+        BiometricPassedIndicator:
+          type: boolean
+          description: Indicates whether the customer passed the biometric validation.
+          example: true
+
+    TermsAndConditionsAcceptance:
+      type: object
+      description: Indicates whether the customer accepted the terms and conditions.
+      properties:
+        AcceptedIndicator:
+          type: boolean
+          description: Indicates whether the customer accepted the terms and conditions.
+          example: true
+
+    EvaluateBiometricResponse:
+      type: object
+      description: Successful biometric evaluation response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/EvaluateBiometricData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-19T15:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    EvaluateBiometricData:
+      type: object
+      description: Biometric evaluation result data.
+      properties:
+        Message:
+          type: string
+          description: Biometric evaluation result message.
+          example: "Biometric evaluation successfully processed"
+
+    HTTPError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          example: "400BAD"
+        Message:
+          type: string
+          example: "Bad request"
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-19T15:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456"
+
+    Error:
+      type: object
+      description: Error detail.
+      properties:
+        Field:
+          type: string
+          example: "AuthenticationPinPresentedValue"
+        Code:
+          type: string
+          example: "INVALID_PIN"
+        Message:
+          type: string
+          example: "The PIN provided is invalid."
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'

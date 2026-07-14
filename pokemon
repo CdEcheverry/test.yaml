@@ -1,0 +1,130 @@
+openapi: 3.0.3
+
+info:
+  title: Pokemon API
+  version: "1.0.0"
+  description: Wrapper para el endpoint Pokemon de PokeAPI.
+
+servers:
+  - url: https://pokeapi.co/api/v2
+
+paths:
+  /pokemon/{pokemon}:
+    get:
+      summary: Obtener información de un Pokémon
+      operationId: getPokemon
+      parameters:
+        - name: pokemon
+          in: path
+          required: true
+          description: Nombre o ID del Pokémon
+          schema:
+            type: string
+            example: ditto
+      responses:
+        '200':
+          description: Información del Pokémon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pokemon'
+        '404':
+          description: Pokémon no encontrado
+
+components:
+  schemas:
+
+    NamedAPIResource:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+
+    Ability:
+      type: object
+      properties:
+        ability:
+          $ref: '#/components/schemas/NamedAPIResource'
+        is_hidden:
+          type: boolean
+        slot:
+          type: integer
+
+    PokemonType:
+      type: object
+      properties:
+        slot:
+          type: integer
+        type:
+          $ref: '#/components/schemas/NamedAPIResource'
+
+    PokemonStat:
+      type: object
+      properties:
+        base_stat:
+          type: integer
+        effort:
+          type: integer
+        stat:
+          $ref: '#/components/schemas/NamedAPIResource'
+
+    Sprites:
+      type: object
+      properties:
+        front_default:
+          type: string
+          nullable: true
+          format: uri
+        back_default:
+          type: string
+          nullable: true
+          format: uri
+        front_shiny:
+          type: string
+          nullable: true
+          format: uri
+        back_shiny:
+          type: string
+          nullable: true
+          format: uri
+
+    Pokemon:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        base_experience:
+          type: integer
+        height:
+          type: integer
+        weight:
+          type: integer
+        is_default:
+          type: boolean
+        order:
+          type: integer
+        abilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ability'
+        forms:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedAPIResource'
+        species:
+          $ref: '#/components/schemas/NamedAPIResource'
+        types:
+          type: array
+          items:
+            $ref: '#/components/schemas/PokemonType'
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/PokemonStat'
+        sprites:
+          $ref: '#/components/schemas/Sprites'

@@ -1,0 +1,422 @@
+openapi: 3.0.3
+
+info:
+  title: Customer Product and Service Directory - BHD
+  description: API used to manage customer product and service directory information.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /CustomerProductandServiceDirectory/Product/Register:
+    post:
+      tags:
+        - BQ - Product
+      summary: Register customer banking product
+      description: Register any type of banking product associated with a customer during an onboarding or product acquisition process.
+      operationId: RegisterCustomerBankingProduct
+
+      parameters:
+
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding or product acquisition process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCustomerProductRequest'
+
+      responses:
+        '200':
+          description: Customer banking product successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterCustomerProductResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+
+  schemas:
+
+    RegisterCustomerProductRequest:
+      type: object
+      description: Request used to register a banking product associated with a customer.
+      properties:
+        CustomerProductAndServiceDirectoryEntry:
+          $ref: '#/components/schemas/CustomerProductAndServiceDirectoryEntry'
+
+    CustomerProductAndServiceDirectoryEntry:
+      type: object
+      description: Customer product and service directory entry information.
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+        ProductAgreementReference:
+          $ref: '#/components/schemas/ProductAgreement'
+
+    InvolvedParty:
+      type: object
+      description: Customer involved in the product registration.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+
+    PartyReference:
+      type: object
+      description: Party information associated with the customer.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentificationType:
+          type: string
+          description: Type of customer identification document.
+          example: "Cedula"
+
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    ProductAgreement:
+      type: object
+      description: Product agreement information associated with the customer banking product.
+      properties:
+        ProductReference:
+          $ref: '#/components/schemas/BankingProduct'
+
+
+    BankingProduct:
+      type: object
+      description: Banking product information.
+      properties:
+        ProductIdentification:
+          $ref: '#/components/schemas/ProductIdentification'
+
+        ProductName:
+          $ref: '#/components/schemas/Name'
+
+        ProductType:
+          $ref: '#/components/schemas/BankingProductType'
+
+        ProductDescription:
+          $ref: '#/components/schemas/Text'
+
+    ProductIdentification:
+      type: object
+      description: Product identification information.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    BankingProductType:
+      type: string
+      description: Type of banking product to be registered for the customer.
+      example: "BrokeredProduct"
+
+
+    Value:
+      type: object
+      description: Generic value object.
+      properties:
+        Value:
+          type: string
+          description: Identifier value.
+          example: "PROD-001"
+
+    Name:
+      type: object
+      description: Name object.
+      properties:
+        Name:
+          type: string
+          description: Product name.
+          example: "Cuenta de Corretaje"
+
+    Text:
+      type: object
+      description: Text object.
+      properties:
+        Text:
+          type: string
+          description: Text value.
+          example: "Brokerage account used to buy, hold and sell financial assets."
+
+
+    RegisterCustomerProductResponse:
+      type: object
+      description: Successful customer banking product registration response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/RegisterCustomerProductData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-15T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    RegisterCustomerProductData:
+      type: object
+      description: Customer product registration result.
+      properties:
+        Message:
+          type: string
+          description: Operation result message.
+          example: "Customer banking product successfully registered"
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+
+        Message:
+          type: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-15T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "ProductType"
+
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid banking product type."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accept"
+            Message: "Accept"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

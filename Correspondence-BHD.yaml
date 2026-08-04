@@ -1,0 +1,466 @@
+openapi: 3.0.3
+
+info:
+  title: Correspondence Send - BHD
+  description: API used to send of pre-formatted correspondence and batches of correspondence (e.g. mail shots).
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /Correspondence/OutboundWithResponse/Otp/Send/Initiate:
+    post:
+      tags:
+        - BQ - OutboundWithResponse
+      summary: Send OTP
+      description: Send an OTP to a customer email address as part of an authentication process.
+      operationId: InitiateOtpSend
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+
+      responses:
+        '200':
+          description: OTP successfully sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpSendResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+
+  /Correspondence/OutboundWithResponse/Email/Send/Initiate:
+    post:
+      tags:
+        - BQ - OutboundWithResponse
+      summary: Send Email
+      description: Send an email to a customer using a predefined template as part of an onboarding process.
+      operationId: InitiateEmailSend
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequest'
+      parameters:
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process usedto retrieve the customer information.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+
+      responses:
+        '200':
+          description: Email successfully sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    OtpSendRequest:
+      type: object
+      description: Request used to send an OTP code to a customer.
+      required:
+        - CustomerReference
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+    InvolvedParty:
+      type: object
+      description: Reference to the customer that will receive the OTP.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+
+    PartyReference:
+      type: object
+      description: Customer information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    Value:
+      type: object
+      description: Value container.
+      properties:
+        Value:
+          type: string
+          description: Value of the identifier.
+          example: "DNI299785349"
+
+    ContactDetails:
+      type: object
+      description: Generic set of communication channels associated with the customer.
+      properties:
+        EmailAddress:
+          type: string
+          description: Email address that will receive the OTP. If it is not provided, the email stored in the customer database will be used.
+          example: "test@vusecurity.com"
+          minLength: 1
+          maxLength: 43200
+
+    OtpSendResponse:
+      type: object
+      description: Successful OTP send response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code.
+          example: "200OK"
+        Message:
+          type: string
+          description: Operation result message.
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/OtpSendData'
+        Timestamp:
+          type: string
+          format: date-time
+          description: Response generation timestamp.
+          example: "2026-08-20T10:30:00Z"
+        RequestId:
+          type: string
+          description: Request identifier.
+          example: "req_12345"
+
+    OtpSendData:
+      type: object
+      description: OTP send result.
+      properties:
+        OtpMessage:
+          type: string
+          description: Indicates the OTP send result.
+          example: "SEND"
+
+    EmailSendRequest:
+      type: object
+      description: Request used to send an email to a customer using a predefined template.
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/EmailCustomerReference'
+
+        CorrespondenceTemplate:
+          $ref: '#/components/schemas/CorrespondenceTemplate'
+
+    EmailCustomerReference:
+      type: object
+      description: Customer reference information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    CorrespondenceTemplate:
+      type: object
+      description: Template used to send the email correspondence.
+      required:
+        - TemplateIdentification
+      properties:
+        TemplateIdentification:
+          $ref: '#/components/schemas/TemplateIdentification'
+
+    TemplateIdentification:
+      type: object
+      description: Name or code of the email template.
+      properties:
+        TemplateNameOrCode:
+          type: string
+          description: Name or code of the template used to send the email.
+          example: "ONBOARDING_WELCOME_TEMPLATE"
+
+    EmailSendResponse:
+      type: object
+      description: Successful email send response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: Operation result message.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/EmailSendData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Response generation timestamp.
+          example: "2026-08-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Request identifier.
+          example: "req_12345"
+
+    EmailSendData:
+      type: object
+      description: Email send result.
+      properties:
+        Message:
+          type: string
+          description: Indicates the email send result.
+          example: "Email successfully sent"
+
+    ApplicationId:
+      type: string
+      description: Unique identifier of the onboarding application process.
+      example: APP-20260529-0001
+
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Error response code.
+          example: "400BAD"
+        Message:
+          type: string
+          description: Error message.
+          example: "Bad request"
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-20T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail.
+      properties:
+        Field:
+          type: string
+          example: "EmailAddress"
+        Code:
+          type: string
+          example: "INVALID_EMAIL"
+        Message:
+          type: string
+          example: "The email address provided is invalid."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accept"
+            Message: "Accept"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

@@ -1,0 +1,1502 @@
+openapi: 3.0.3
+
+info:
+  title: Document Management and Archive API - BHD
+  description: >
+    Unified API for Document Management and Archive Domain. 
+    This API handles pre-formatted correspondence, document directory categorization, 
+    storage, signature support, upload, retrieval, and document validation processes 
+    during onboarding.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  # =======================================================================
+  # CORRESPONDENCE SUBDOMAIN
+  # =======================================================================
+  /Correspondence/OutboundWithResponse/Otp/Send/Initiate:
+    post:
+      tags:
+        - BQ - OutboundWithResponse
+      summary: Send OTP
+      description: Send an OTP to a customer email address as part of an authentication process.
+      operationId: InitiateOtpSend
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+      responses:
+        '200':
+          description: OTP successfully sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpSendResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /Correspondence/OutboundWithResponse/Email/Send/Initiate:
+    post:
+      tags:
+        - BQ - OutboundWithResponse
+      summary: Send Email
+      description: Send an email to a customer using a predefined template as part of an onboarding process.
+      operationId: InitiateEmailSend
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequest'
+      parameters:
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process used to retrieve the customer information.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Email successfully sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  # =======================================================================
+  # DOCUMENT DIRECTORY SUBDOMAIN
+  # =======================================================================
+  /DocumentDirectory/Signed/Register:
+    post:
+      tags:
+        - CR - DocumentDirectoryEntry
+      summary: Register Signed Document
+      description: Registers a signed document generated during the onboarding process.
+      operationId: RegisterSignedDocument
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterSignedDocumentRequest'
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterSignedDocumentResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentDirectory/UploadedSupports/Retrieve:
+    get:
+      tags:
+        - CR - DocumentDirectoryEntry
+      summary: Retrieve uploaded supporting document existence
+      description: Retrieves the list of supporting documents that already exist in the document repository for a customer during the onboarding process, without returning the document content.
+      operationId: RetrieveUploadedSupportingDocumentExistence
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      responses:
+        '200':
+          description: Uploaded supporting documents successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadedSupportsRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentDirectory/UploadedSupports/Visualization/Execute:
+    post:
+      tags:
+        - BQ - DocumentVisualization
+      summary: Execute uploaded supporting document visualization
+      description: Executes the visualization of an uploaded supporting document that already exists in the document repository for a customer onboarding process.
+      operationId: ExecuteUploadedSupportingDocumentVisualization
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadedSupportVisualizationExecuteRequest'
+      responses:
+        '200':
+          description: Uploaded supporting document visualization successfully executed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadedSupportVisualizationExecuteResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentDirectory/UploadSupports/Capture:
+    post:
+      tags:
+        - CR - DocumentDirectoryEntry
+      summary: Capture uploaded supporting documents
+      description: Executes the storage of supporting documentation uploaded by a customer in the document repository during the onboarding process.
+      operationId: CaptureUploadedSupportingDocuments
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      responses:
+        '200':
+          description: Uploaded supporting documents successfully captured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadSupportsCaptureResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  # =======================================================================
+  # DOCUMENT SERVICES SUBDOMAIN
+  # =======================================================================
+  /DocumentServices/initiate:
+    post:
+      tags:
+        - CR - DocumentServiceProcedure
+      summary: Upload supporting documents
+      description: Initiate the upload of supporting documents required for customer onboarding.
+      operationId: InitiateSupportingDocumentsUpload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportingDocumentsUploadRequest'
+      responses:
+        '200':
+          description: Supporting documents successfully uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportingDocumentsUploadResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentServices/CustomerSignature/Request:
+    get:
+      tags:
+        - CR - DocumentServiceProcedure
+      summary: Retrieve documents for customer signature
+      description: Retrieve the documents that must be signed by a customer.
+      operationId: RetrieveCustomerSignatureDocuments
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      responses:
+        '200':
+          description: Documents for signature successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSignatureRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentServices/UploadSupports/Retrieve:
+    get:
+      tags:
+        - CR - DocumentServiceProcedure
+      summary: Retrieve required supporting documents
+      description: Retrieve the specific supporting documents that a customer must upload in order to continue with a product application, according to the registered customer and application data.
+      operationId: RetrieveRequiredSupportingDocuments
+      parameters:
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the product request.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+      responses:
+        '200':
+          description: Required supporting documents successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadSupportsRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /DocumentServices/DocumentValidation/Evaluate:
+    post:
+      tags:
+        - CR - DocumentValidationProcedure
+      summary: Evaluate document using OCR validation
+      description: Sends a customer document to an OCR validation tool to determine whether the document is valid and the confidence percentage of the validation.
+      operationId: EvaluateDocumentValidation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentValidationEvaluateRequest'
+      responses:
+        '200':
+          description: Document validation successfully evaluated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentValidationEvaluateResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    # ---------------------------------------------------------
+    # SHARED COMMON SCHEMAS
+    # ---------------------------------------------------------
+    Value:
+      type: object
+      description: Value container.
+      properties:
+        Value:
+          type: string
+          description: Value of the identifier.
+          example: "123456"
+
+    Identifier:
+      type: object
+      description: Unique identifier information.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    Name:
+      type: object
+      description: Name object.
+      properties:
+        Name:
+          type: string
+          description: Name.
+          example: "Document Name"
+
+    Text:
+      type: object
+      description: Text object.
+      properties:
+        Text:
+          type: string
+          description: Text value.
+          example: "application/pdf"
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationType'
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    PartyIdentificationType:
+      type: string
+      description: Type of customer identification document.
+      example: Cedula
+
+    ApplicationId:
+      type: string
+      description: Unique identifier of the onboarding application process.
+      example: APP-20260529-0001
+
+    DocumentContent:
+      type: object
+      description: Content of a document.
+      properties:
+        Text:
+          type: string
+          description: Document encoded in Base64, PDF content, or repository reference.
+          example: "JVBERi0xLjQKJcfsj6IK..."
+
+    Document:
+      type: object
+      description: Document managed by Document Services.
+      properties:
+        DocumentIdentification:
+          $ref: '#/components/schemas/Identifier'
+        DocumentFormat:
+          $ref: '#/components/schemas/Text'
+        DocumentContent:
+          $ref: '#/components/schemas/Text'
+
+    Date:
+      type: object
+      description: Date value.
+      properties:
+        DateContent:
+          type: string
+          format: string
+          description: Date content.
+          example: "15-06-2026"
+
+    # ---------------------------------------------------------
+    # SCHEMAS - CORRESPONDENCE
+    # ---------------------------------------------------------
+    OtpSendRequest:
+      type: object
+      description: Request used to send an OTP code to a customer.
+      required:
+        - CustomerReference
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+    InvolvedParty:
+      type: object
+      description: Reference to the customer that will receive the OTP.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+
+    PartyReference:
+      type: object
+      description: Customer information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    ContactDetails:
+      type: object
+      description: Generic set of communication channels associated with the customer.
+      properties:
+        EmailAddress:
+          type: string
+          description: Email address that will receive the OTP. If not provided, the email stored in the DB is used.
+          example: "test@vusecurity.com"
+          minLength: 1
+          maxLength: 43200
+
+    OtpSendResponse:
+      type: object
+      description: Successful OTP send response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/OtpSendData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-20T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    OtpSendData:
+      type: object
+      description: OTP send result.
+      properties:
+        OtpMessage:
+          type: string
+          description: Indicates the OTP send result.
+          example: "SEND"
+
+    EmailSendRequest:
+      type: object
+      description: Request used to send an email to a customer using a predefined template.
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/EmailCustomerReference'
+        CorrespondenceTemplate:
+          $ref: '#/components/schemas/CorrespondenceTemplate'
+
+    EmailCustomerReference:
+      type: object
+      description: Customer reference information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    CorrespondenceTemplate:
+      type: object
+      description: Template used to send the email correspondence.
+      required:
+        - TemplateIdentification
+      properties:
+        TemplateIdentification:
+          $ref: '#/components/schemas/TemplateIdentification'
+
+    TemplateIdentification:
+      type: object
+      description: Name or code of the email template.
+      properties:
+        TemplateNameOrCode:
+          type: string
+          description: Name or code of the template used to send the email.
+          example: "ONBOARDING_WELCOME_TEMPLATE"
+
+    EmailSendResponse:
+      type: object
+      description: Successful email send response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/EmailSendData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-20T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    EmailSendData:
+      type: object
+      description: Email send result.
+      properties:
+        Message:
+          type: string
+          description: Indicates the email send result.
+          example: "Email successfully sent"
+
+    # ---------------------------------------------------------
+    # SCHEMAS - DOCUMENT DIRECTORY
+    # ---------------------------------------------------------
+    RegisterSignedDocumentRequest:
+      type: object
+      description: Request to register signed documents.
+      properties:
+        DocumentDirectoryEntry:
+          type: array
+          description: List of signed documents to be stored in the directory.
+          items:
+            $ref: '#/components/schemas/SignedDocumentDirectoryEntry'
+        CustomerDocumentAcceptance:
+          $ref: '#/components/schemas/CustomerDocumentAcceptance'
+
+    CustomerDocumentAcceptance:
+      type: object
+      description: Indicates customer acceptance and reading confirmation before signing.
+      properties:
+        DocumentsRead:
+          type: boolean
+          description: Indicates whether the customer read all documents before signing them.
+          example: true
+
+    SignedDocumentDirectoryEntry:
+      type: object
+      description: Represents a signed document to be stored in the directory.
+      properties:
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        DocumentContent:
+          $ref: '#/components/schemas/DocumentContent'
+
+    RegisterSignedDocumentResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200"
+        Message:
+          type: string
+          example: "Document successfully registered"
+        Data:
+          $ref: '#/components/schemas/RegisterSignedDocumentResponseData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456789"
+
+    RegisterSignedDocumentResponseData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    UploadedSupportsRetrieveResponse:
+      type: object
+      description: Successful uploaded supporting documents retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/UploadedSupportsRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456789"
+
+    UploadedSupportsRetrieveData:
+      type: object
+      description: List of supporting documents that already exist in the document repository for the customer.
+      properties:
+        UploadedSupports:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadedSupportDocumentExistence'
+
+    UploadedSupportDocumentExistence:
+      type: object
+      description: Existence information of a supporting document uploaded by the customer.
+      properties:
+        DocumentIdentification:
+          $ref: '#/components/schemas/Identifier'
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        DocumentType:
+          type: string
+          example: "IdentityDocument"
+        DocumentFormat:
+          type: string
+          example: "application/pdf"
+        DocumentStatus:
+          type: string
+          example: "Uploaded"
+        DocumentExistsIndicator:
+          type: boolean
+          example: true
+        UploadDate:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequiredIndicator:
+          type: boolean
+          example: true
+        ValidationResult:
+          type: string
+          example: "PendingValidation"
+
+    UploadedSupportVisualizationExecuteRequest:
+      type: object
+      description: Request used to execute the visualization of an uploaded supporting document.
+      properties:
+        DocumentVisualization:
+          $ref: '#/components/schemas/DocumentVisualization'
+
+    DocumentVisualization:
+      type: object
+      description: Information required to visualize an uploaded supporting document from the document repository.
+      properties:
+        DocumentIdentification:
+          $ref: '#/components/schemas/Identifier'
+        DocumentType:
+          type: string
+          example: "IdentityDocument"
+
+    UploadedSupportVisualizationExecuteResponse:
+      type: object
+      description: Successful uploaded supporting document visualization response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/UploadedSupportVisualizationExecuteData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456789"
+
+    UploadedSupportVisualizationExecuteData:
+      type: object
+      description: Document visualization result.
+      properties:
+        Document:
+          $ref: '#/components/schemas/VisualizedDocument'
+
+    VisualizedDocument:
+      type: object
+      description: Uploaded supporting document retrieved from the document repository for visualization.
+      properties:
+        DocumentIdentification:
+          $ref: '#/components/schemas/Identifier'
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        DocumentType:
+          type: string
+          example: "IdentityDocument"
+        DocumentFormat:
+          type: string
+          example: "application/pdf"
+        DocumentContent:
+          $ref: '#/components/schemas/DocumentContent'
+
+    UploadSupportsCaptureResponse:
+      type: object
+      description: Successful uploaded supporting documents capture response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/UploadSupportsCaptureData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "REQ-123456789"
+
+    UploadSupportsCaptureData:
+      type: object
+      description: Uploaded supporting documents capture result.
+      properties:
+        Message:
+          type: string
+          example: "Supporting documents successfully captured"
+
+    # ---------------------------------------------------------
+    # SCHEMAS - DOCUMENT SERVICES
+    # ---------------------------------------------------------
+    SupportingDocumentsUploadRequest:
+      type: object
+      description: Request used to upload supporting documents.
+      properties:
+        DocumentServiceProcedure:
+          $ref: '#/components/schemas/DocumentServiceProcedure'
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    DocumentServiceProcedure:
+      type: object
+      description: Procedure used to manage customer supporting documents.
+      properties:
+        DocumentServiceProcedureDocumentReference:
+          $ref: '#/components/schemas/SupportingDocuments'
+
+    SupportingDocuments:
+      type: object
+      description: Supporting documents required for onboarding.
+      properties:
+        IdentityDocument:
+          $ref: '#/components/schemas/Document'
+        EmploymentLetter:
+          $ref: '#/components/schemas/Document'
+        AccountMovements:
+          $ref: '#/components/schemas/Document'
+        FundSourceDocument:
+          $ref: '#/components/schemas/Document'
+        FundOriginDocument:
+          $ref: '#/components/schemas/Document'
+
+    SupportingDocumentsUploadResponse:
+      type: object
+      description: Successful supporting documents upload response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/SupportingDocumentsUploadData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    SupportingDocumentsUploadData:
+      type: object
+      description: Supporting documents upload result.
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    CustomerSignatureRetrieveResponse:
+      type: object
+      description: Successful customer signature documents retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/CustomerSignatureRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    CustomerSignatureRetrieveData:
+      type: object
+      description: Documents pending customer signature.
+      properties:
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignatureDocument'
+
+    SignatureDocument:
+      type: object
+      description: Document to be signed by the customer.
+      properties:
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        Document:
+          $ref: '#/components/schemas/Document'
+
+    UploadSupportsRetrieveResponse:
+      type: object
+      description: Successful required supporting documents retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/UploadSupportsRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    UploadSupportsRetrieveData:
+      type: object
+      description: List of supporting documents required for the customer to continue the product application.
+      properties:
+        SupportingDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequiredSupportingDocument'
+
+    RequiredSupportingDocument:
+      type: object
+      description: Supporting document required for the customer application.
+      properties:
+        DocumentType:
+          type: string
+          example: "EmploymentLetter"
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        RequiredIndicator:
+          type: boolean
+          example: true
+        DocumentFormat:
+          $ref: '#/components/schemas/Text'
+        MaximumSize:
+          type: string
+          example: "10MB"
+
+    DocumentValidationEvaluateRequest:
+      type: object
+      description: Request used to evaluate a customer document using an OCR validation tool.
+      properties:
+        DocumentValidationProcedure:
+          $ref: '#/components/schemas/DocumentValidationProcedure'
+
+    DocumentValidationProcedure:
+      type: object
+      description: Procedure used to validate a customer document through OCR.
+      properties:
+        DocumentReference:
+          $ref: '#/components/schemas/DocumentValidationReference'
+
+    DocumentValidationReference:
+      type: object
+      description: Document information to be validated through OCR.
+      properties:
+        DocumentType:
+          type: string
+          example: "IdentityDocument"
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        Document:
+          $ref: '#/components/schemas/Document'
+
+    DocumentValidationEvaluateResponse:
+      type: object
+      description: Successful document OCR validation response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/DocumentValidationEvaluateData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    DocumentValidationEvaluateData:
+      type: object
+      description: Document OCR validation result.
+      properties:
+        DocumentValidationResult:
+          $ref: '#/components/schemas/DocumentValidationResult'
+
+    DocumentValidationResult:
+      type: object
+      description: Result of the OCR document validation.
+      properties:
+        ValidDocumentIndicator:
+          type: boolean
+          example: true
+        ValidityPercentage:
+          type: number
+          format: float
+          example: 96.75
+        ValidationStatus:
+          type: string
+          example: "Valid"
+        ValidationMessage:
+          type: string
+          example: "Document successfully validated through OCR."
+        ValidationDate:
+          $ref: '#/components/schemas/Date'
+
+    # ---------------------------------------------------------
+    # ERROR & RESPONSE SCHEMAS (UNIFIED)
+    # ---------------------------------------------------------
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+        Message:
+          type: string
+          description: General message associated with the operation result.
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Error response code.
+          example: "400BAD"
+        Message:
+          type: string
+          description: Error message.
+          example: "Bad request"
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail.
+      properties:
+        Field:
+          type: string
+          example: "EmailAddress"
+        Code:
+          type: string
+          example: "INVALID_EMAIL"
+        Message:
+          type: string
+          example: "The email address provided is invalid."
+
+  # =======================================================================
+  # COMMON STANDARD RESPONSES (UNIFIED)
+  # =======================================================================
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    MethodNotAllowed:
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    RequestTimeout:
+      description: Request Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    UnprocessableContent:
+      description: Unprocessable Content
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    BadGateway:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    ServiceUnavailable:
+      description: Service Unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    GatewayTimeout:
+      description: Gateway Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

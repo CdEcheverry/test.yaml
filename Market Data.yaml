@@ -1,0 +1,326 @@
+openapi: 3.0.3
+
+info:
+  title: Public Reference Data Management - BHD
+  description: >
+    API used to retrieve global reference data lists required by front-end fields.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /PublicReferenceDataManagement/GlobalReferenceData/{type}/Retrieve:
+    get:
+      tags:
+        - BQ - GlobalReferenceData
+      summary: Retrieve global reference data list
+      description: Retrieve a catalog list used to populate front-end picklist fields.
+      operationId: RetrieveGlobalReferenceDataList
+
+      parameters:
+        - in: path
+          name: type
+          required: true
+          description: Name or code of the reference data list to retrieve.
+          schema:
+            type: string
+            example: "countries"
+
+      responses:
+        '200':
+          description: Successful global reference data retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveGlobalReferenceDataResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+
+  schemas:
+
+    RetrieveGlobalReferenceDataResponse:
+      type: object
+      description: Response containing the requested global reference data list.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/GlobalReferenceDataList'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-25T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    GlobalReferenceDataList:
+      type: object
+      description: Global reference data list result.
+      properties:
+        ListName:
+          type: string
+          description: Name or code of the reference data list returned.
+          example: "countries"
+
+        GlobalReferenceData:
+          type: array
+          description: List of values used to populate front-end picklist fields.
+          items:
+            $ref: '#/components/schemas/GlobalReferenceDataItem'
+
+    GlobalReferenceDataItem:
+      type: object
+      description: Single reference data value.
+      properties:
+
+        Value:
+          type: string
+          description: Display name of the reference data item.
+          example: "Colombia"
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          format: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+
+        Message:
+          type: string
+          format: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-25T10:30:00Z"
+
+        RequestId:
+          type: string
+          format: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "list"
+
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid reference data list."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

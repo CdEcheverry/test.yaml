@@ -1,0 +1,455 @@
+openapi: 3.0.3
+
+info:
+  title: Investment Account - BHD
+  description: API to retrieve investment accounts associated with a customer in brokerage services.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /InvestmentAccount/{documentnumber}/Retrieve:
+    get:
+      tags:
+        - CR - InvestmentAccountFacility
+      summary: Retrieve customer investment accounts
+      description: Retrieve the investment accounts associated with a customer document number in brokerage services.
+      operationId: RetrieveInvestmentAccountsByCustomer
+      parameters:
+        - in: path
+          name: documentnumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            $ref: '#/components/schemas/DocumentNumber'
+      responses:
+        '200':
+          description: Investment accounts successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestmentAccountRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    InvestmentAccountRetrieveResponse:
+      type: object
+      description: Standard successful response structure returned by the service.
+      properties:
+        ResponseCode:
+          $ref: '#/components/schemas/ResponseCode'
+        Message:
+          $ref: '#/components/schemas/ResponseMessage'
+        Data:
+          $ref: '#/components/schemas/InvestmentAccountRetrieveData'
+        Timestamp:
+          $ref: '#/components/schemas/Timestamp'
+        RequestId:
+          $ref: '#/components/schemas/RequestId'
+
+    InvestmentAccountRetrieveData:
+      type: object
+      description: Container object with the investment accounts associated with the customer.
+      properties:
+        InvestmentAccountFacilities:
+          $ref: '#/components/schemas/InvestmentAccountFacilityList'
+
+    InvestmentAccountFacilityList:
+      type: array
+      description: List of investment accounts associated with the customer.
+      items:
+        $ref: '#/components/schemas/InvestmentAccountFacility'
+
+    InvestmentAccountFacility:
+      type: object
+      description: Investment account facility associated with a customer in brokerage services.
+      properties:
+        InvestmentAccountNumber:
+          $ref: '#/components/schemas/AccountIdentification'
+        InvestmentAccountType:
+          $ref: '#/components/schemas/AccountType'
+        AccountDetails:
+          $ref: '#/components/schemas/Account'
+        CustomerReference:
+          $ref: '#/components/schemas/PartyReference'
+        JointAccountParticipantReference:
+          $ref: '#/components/schemas/PartyReference'
+        InvestmentConsultantReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+
+    PartyReference:
+      type: object
+      description: Investment account identification information.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/Party'
+
+    AccountIdentification:
+      type: object
+      description: Investment account identification information.
+      properties:
+        AccountIdentification:
+          $ref: '#/components/schemas/Identifier'
+
+    Identifier:
+      type: object
+      description: Unique identifier structure.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/IdentifierValue'
+
+    AccountType:
+      type: object
+      description: Specifies the category or type of investment account.
+      properties:
+            AccountType:
+                type: string
+                description: Type of investment account.
+                example: "Cuenta Individual"
+
+    Account:
+      type: object
+      description: Details of the investment account.
+      properties:
+        AccountStatus:
+          $ref: '#/components/schemas/AccountStatus'
+
+    AccountStatus:
+      type: object
+      description: Investment account lifecycle status.
+      properties:
+        AccountStatusType:
+          $ref: '#/components/schemas/AccountStatusType'
+
+    AccountStatusType:
+      type: string
+      description: Current status of the investment account.
+      example: "Active"
+
+    InvolvedParty:
+      type: object
+      description: Party involved in the investment account.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/Party'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+
+    Party:
+      type: object
+      description: Party information associated with the investment account.
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/Name'
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Party identification information.
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationType'
+        IdentifierValue:
+          $ref: '#/components/schemas/IdentifierValue'
+
+    PartyIdentificationType:
+      type: string
+      description: Type of party identification.
+      example: "Cedula"
+
+    ContactDetails:
+      type: object
+      description: Contact information associated with the party.
+      properties:
+        EmailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+        PhoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+
+    IdentifierValue:
+      type: object
+      description: Unique identifier structure.
+      properties:
+        Value:
+          $ref: '#/components/schemas/Value'
+
+  
+    Value:
+      type: string
+      description: Identifier value.
+      example: "40222151504"
+
+    Name:
+      type: object
+      description: Name by which a party, account or concept is known.
+      properties:
+        Name:
+          type: string
+          description: Name value.
+          example: "BERNARDO SANTOS"
+
+
+    DocumentNumber:
+      type: string
+      description: Customer identification document number.
+      example: "40222151504"
+
+    Text:
+      type: string
+      description: Generic text value.
+      example: "Sample text"
+
+    ResponseCode:
+      type: string
+      description: Unique response code that identifies the successful result.
+      example: "200OK"
+
+    ResponseMessage:
+      type: string
+      description: General message associated with the operation result.
+      example: "Successful"
+
+    Timestamp:
+      type: string
+      format: date-time
+      description: Date and time when the response was generated.
+      example: "2026-06-03T10:30:00Z"
+
+    RequestId:
+      type: string
+      description: Unique identifier associated with the request transaction.
+      example: "req_12345"
+
+    EmailAddress:
+      type: string
+      description: Party email address.
+      example: "participante@email.com"
+
+    PhoneNumber:
+      type: string
+      description: Party phone number.
+      example: "8095551234"
+
+    HTTPError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          $ref: '#/components/schemas/ErrorResponseCode'
+        Message:
+          $ref: '#/components/schemas/ErrorResponseMessage'
+        Errors:
+          $ref: '#/components/schemas/ErrorList'
+        Timestamp:
+          $ref: '#/components/schemas/Timestamp'
+        RequestId:
+          $ref: '#/components/schemas/RequestId'
+
+    ErrorList:
+      type: array
+      description: List of errors returned by the service.
+      items:
+        $ref: '#/components/schemas/Error'
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          $ref: '#/components/schemas/Text'
+        Code:
+          $ref: '#/components/schemas/Text'
+        Message:
+          $ref: '#/components/schemas/Text'
+
+    ErrorResponseCode:
+      type: string
+      description: Unique code that identifies the error response result.
+      example: "400BAD"
+
+    ErrorResponseMessage:
+      type: string
+      description: General error response message associated with the operation result.
+      example: "Bad request"
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accept"
+            Message: "Accept"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'

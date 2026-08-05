@@ -1,0 +1,653 @@
+openapi: 3.0.3
+
+info:
+  title: Customer Surveys - BHD
+  description: API used to manage customer survey definition, execution, capture and analysis processes.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /CustomerSurveys/OnboardingSatisfaction/Capture:
+    post:
+      tags:
+        - BQ - Execution
+      summary: Capture onboarding satisfaction survey
+      description: Capture customer satisfaction survey responses related to the onboarding process.
+      operationId: CaptureOnboardingSatisfactionSurvey
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingSatisfactionSurveyCaptureRequest'
+
+      responses:
+        '200':
+          description: Onboarding satisfaction survey successfully captured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingSatisfactionSurveyCaptureResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /CustomerSurveys/OnboardingSatisfaction/Retrieve:
+    get:
+      tags:
+        - BQ - Execution
+      summary: Retrieve onboarding satisfaction survey
+      description: Retrieve the onboarding satisfaction survey that will be displayed on screen for a customer to complete during the onboarding process.
+      operationId: RetrieveOnboardingSatisfactionSurvey
+
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification number.
+          schema:
+            type: string
+            example: "40222151504"
+
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260620-0001"
+
+      responses:
+        '200':
+          description: Onboarding satisfaction survey successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingSatisfactionSurveyRetrieveResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+
+  schemas:
+
+    OnboardingSatisfactionSurveyCaptureRequest:
+      type: object
+      description: Request used to capture customer satisfaction survey responses related to the onboarding process.
+      properties:
+        CustomerSurveyProcedure:
+          $ref: '#/components/schemas/CustomerSurveyProcedure'
+
+        ReviewerSelection:
+          $ref: '#/components/schemas/ReviewerSelection'
+
+        Execution:
+          $ref: '#/components/schemas/OnboardingSatisfactionSurveyExecution'
+
+    CustomerSurveyProcedure:
+      type: object
+      description: Customer survey procedure information.
+      properties:
+        CustomerSurveyType:
+          type: string
+          description: Type or category of customer survey.
+          example: "Onboarding Satisfaction Survey"
+
+        CustomerSurveyProcedureVersionNumber:
+          type: string
+          description: Version number of the customer survey.
+          example: "1.0"
+
+    ReviewerSelection:
+      type: object
+      description: Customer selected as a survey reviewer.
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+        ApplicationReference:
+          $ref: '#/components/schemas/ApplicationReference'
+
+    InvolvedParty:
+      type: object
+      description: Customer reference information.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+
+    PartyReference:
+      type: object
+      description: Party information associated with the customer.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentificationType:
+          type: string
+          description: Type of customer identification document.
+          example: "Cedula"
+
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    ContactDetails:
+      type: object
+      description: Customer contact information.
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+          description: Customer email address.
+          example: "customer@email.com"
+
+    ApplicationReference:
+      type: object
+      description: Reference to the onboarding application process.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    OnboardingSatisfactionSurveyExecution:
+      type: object
+      description: Customer survey execution information with the satisfaction answers captured during onboarding.
+      properties:
+        CustomerSurveyExecutionWorkTaskType:
+          type: string
+          description: Type of survey execution task.
+          example: "Capture onboarding satisfaction questionnaire"
+
+        CustomerSurveyExecutionWorkTaskDate:
+          $ref: '#/components/schemas/Date'
+
+        SurveyResponse:
+          $ref: '#/components/schemas/SurveyResponse'
+
+    SurveyResponse:
+      type: object
+      description: Customer satisfaction survey response.
+      properties:
+
+
+
+        CustomerComment:
+          type: string
+          description: Additional comments provided by the customer about the onboarding process.
+          example: "El proceso fue rápido y fácil de completar."
+
+        SurveyQuestionAnswer:
+          type: array
+          description: List of question and answer details captured in the satisfaction survey.
+          items:
+            $ref: '#/components/schemas/SurveyQuestionAnswer'
+
+    SurveyQuestionAnswer:
+      type: object
+      description: Individual question and answer captured as part of the onboarding satisfaction survey.
+      properties:
+        QuestionCode:
+          type: string
+          description: Code that identifies the survey question.
+          example: "Q001"
+
+        QuestionText:
+          type: string
+          description: Text of the survey question.
+          example: "¿Qué tan satisfecho quedó con el proceso de onboarding?"
+
+        Answer:
+          type: string
+          description: Customer answer to the survey question.
+          example: "Muy satisfecho"
+
+        AnswerScore:
+          type: integer
+          description: Numeric score associated with the answer when applicable.
+          example: 5
+
+    Date:
+      type: object
+      description: Date value.
+      properties:
+        DateContent:
+          type: string
+          format: string
+          description: Date when the survey response was captured.
+          example: "20-06-2026"
+
+    Value:
+      type: object
+      description: Generic value object.
+      properties:
+        Value:
+          type: string
+          description: Identifier value.
+          example: "APP-20260620-0001"
+
+    OnboardingSatisfactionSurveyCaptureResponse:
+      type: object
+      description: Successful onboarding satisfaction survey capture response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/OnboardingSatisfactionSurveyCaptureData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    OnboardingSatisfactionSurveyCaptureData:
+      type: object
+      description: Onboarding satisfaction survey capture result.
+      properties:
+        Message:
+          type: string
+          description: Operation result message.
+          example: "Onboarding satisfaction survey successfully captured"
+
+    OnboardingSatisfactionSurveyRetrieveResponse:
+      type: object
+      description: Successful onboarding satisfaction survey retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/OnboardingSatisfactionSurveyRetrieveData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    OnboardingSatisfactionSurveyRetrieveData:
+      type: object
+      description: Onboarding satisfaction survey information to be displayed to the customer.
+      properties:
+        CustomerSurveyProcedure:
+          $ref: '#/components/schemas/CustomerSurveyProcedure'
+
+        SurveyDefinition:
+          $ref: '#/components/schemas/OnboardingSatisfactionSurveyDefinition'
+
+    OnboardingSatisfactionSurveyDefinition:
+      type: object
+      description: Definition of the onboarding satisfaction survey to be presented on screen.
+      properties:
+        SurveyIdentification:
+          $ref: '#/components/schemas/SurveyIdentification'
+
+        SurveyTitle:
+          type: string
+          description: Title of the survey displayed to the customer.
+          example: "Encuesta de satisfacción del proceso de onboarding"
+
+        SurveyDescription:
+          type: string
+          description: Description or introductory text displayed to the customer before completing the survey.
+          example: "Queremos conocer tu experiencia con el proceso de onboarding."
+
+        SurveyQuestion:
+          type: array
+          description: List of survey questions to be displayed to the customer.
+          items:
+            $ref: '#/components/schemas/SurveyQuestion'
+
+    SurveyIdentification:
+      type: object
+      description: Unique identification of the survey definition.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    SurveyQuestion:
+      type: object
+      description: Question that belongs to the onboarding satisfaction survey.
+      properties:
+        QuestionCode:
+          type: string
+          description: Code that identifies the survey question.
+          example: "Q001"
+
+        QuestionText:
+          type: string
+          description: Text of the survey question displayed to the customer.
+          example: "¿Qué tan satisfecho quedó con el proceso de onboarding?"
+
+        QuestionType:
+          type: string
+          description: Type of question to be rendered on screen.
+          example: "SingleChoice"
+
+
+        RequiredIndicator:
+          type: boolean
+          description: Indicates whether the question is mandatory.
+          example: true
+
+        AnswerOption:
+          type: array
+          description: List of available answer options for the question.
+          items:
+            $ref: '#/components/schemas/AnswerOption'
+
+    AnswerOption:
+      type: object
+      description: Answer option available for a survey question.
+      properties:
+
+
+        AnswerText:
+          type: string
+          description: Text of the answer option displayed to the customer.
+          example: "Muy satisfecho"
+
+        AnswerScore:
+          type: integer
+          description: Numeric score associated with the answer option when applicable.
+          example: 5
+
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+
+        Message:
+          type: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-06-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "SurveyResponse.OverallSatisfactionScore"
+
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid satisfaction score."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accept"
+            Message: "Accept"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

@@ -1,0 +1,394 @@
+openapi: 3.0.3
+info:
+  title: Mutual Fund Administration - BHD
+  description: API used to manage mutual fund administration processes and retrieve fund accounting information associated with customer onboarding.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /MutualFundAdministration/FundAccounting/Retrieve:
+    get:
+      tags:
+        - BQ - FundAccounting
+      summary: Retrieve subscribed onboarding funds
+      description: Retrieve the mutual fund or funds subscribed by a customer during the onboarding process and their associated order numbers.
+      operationId: RetrieveSubscribedOnboardingFunds
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification number.
+          schema:
+            type: string
+            example: "40222151504"
+
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+
+      responses:
+        '200':
+          description: Subscribed onboarding funds successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundAccountingRetrieveResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    FundAccountingRetrieveResponse:
+      type: object
+      description: Successful subscribed onboarding funds retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/FundAccountingRetrieveData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-07-31T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    FundAccountingRetrieveData:
+      type: object
+      description: Fund accounting information associated with subscribed onboarding funds.
+      properties:
+        ApplicationIdentification:
+          $ref: '#/components/schemas/ApplicationIdentification'
+
+        CustomerReference:
+          $ref: '#/components/schemas/CustomerReference'
+
+        InvestorProfile:
+          $ref: '#/components/schemas/InvestorProfile'
+
+        SubscribedFund:
+          type: array
+          description: List of mutual funds subscribed by the customer during onboarding.
+          items:
+            $ref: '#/components/schemas/SubscribedFund'
+    
+    InvestorProfile:
+      type: string
+      description: Investor profile applied for the opening of the subscribed mutual funds during onboarding.
+      example: "Moderado"
+
+    ApplicationIdentification:
+      type: object
+      description: Identifies the onboarding application process.
+      properties:
+        ApplicationId:
+          $ref: '#/components/schemas/ApplicationId'
+
+    ApplicationId:
+      type: string
+      description: Unique identifier of the onboarding application process.
+      example: "APP-20260731-0001"
+
+    CustomerReference:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification details.
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationType'
+
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    PartyIdentificationType:
+      type: string
+      description: Type of customer identification document.
+      example: "Cedula"
+
+    Value:
+      type: object
+      description: Value object.
+      properties:
+        Value:
+          type: string
+          description: Identification value.
+          example: "40222151504"
+
+    SubscribedFund:
+      type: object
+      description: Mutual fund subscribed by the customer during onboarding.
+      properties:
+        FundType:
+          $ref: '#/components/schemas/FundType'
+
+        OrderNumber:
+          $ref: '#/components/schemas/OrderNumber'
+
+    FundType:
+      type: string
+      description: Type of mutual fund subscribed during onboarding.
+      example: "Fondo Mutuo Renta Fija"
+
+    OrderNumber:
+      type: string
+      description: Order number associated with the subscribed mutual fund.
+      example: "ENC-20260731-0001"
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+
+        Message:
+          type: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-07-31T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "applicationId"
+
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid request identifier."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

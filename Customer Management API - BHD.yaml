@@ -1,0 +1,2758 @@
+openapi: 3.0.3
+
+info:
+  title: Customer Management API - BHD
+  description: >
+    Unified API for the Customer Management Domain. This API handles customer behavior insights, 
+    product and service directories, party reference data (demographics, financials, profiles), 
+    and sales product agreements (terms and conditions).
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  # =======================================================================
+  # CUSTOMER BEHAVIOR INSIGHTS
+  # =======================================================================
+  /CustomerBehaviorInsights/{identificationnumber}/RestrictiveLists/Insight/Retrieve:
+    post:
+      tags:
+        - BQ - Insight
+      summary: Retrieve customer restrictive lists insight
+      description: Retrieve restrictive lists insight information for a customer based on the identification number and application context.
+      operationId: RetrieveRestrictiveListsInsight
+      parameters:
+        - in: path
+          name: identificationnumber
+          required: true
+          description: Customer identification number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: applicationId
+          required: true
+          description: Application identifier associated with the restrictive lists insight request.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      responses:
+        '200':
+          description: Successful restrictive lists insight retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveRestrictiveListsInsightResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  # =======================================================================
+  # CUSTOMER PRODUCT AND SERVICE DIRECTORY
+  # =======================================================================
+  /CustomerProductandServiceDirectory/Product/Register:
+    post:
+      tags:
+        - BQ - Product
+      summary: Register customer banking product
+      description: Register any type of banking product associated with a customer during an onboarding or product acquisition process.
+      operationId: RegisterCustomerBankingProduct
+      parameters:
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding or product acquisition process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCustomerProductRequest'
+      responses:
+        '200':
+          description: Customer banking product successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterCustomerProductResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  # =======================================================================
+  # PARTY REFERENCE DATA DIRECTORY
+  # =======================================================================
+  /PartyReferenceDataDirectory/Register:
+    post:
+      tags:
+        - CR - PartyReferenceDataDirectoryEntry
+      summary: Register customer reference information
+      description: Register a customer entity in the Party Reference Data Directory.
+      operationId: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyReferenceDataDirectoryEntry'
+      responses:
+        '200':
+          description: Successful registration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyReferenceDataDirectoryEntryResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /PartyReferenceDataDirectory/Jce/Retrieve:
+    post:
+      tags:
+        - BQ - PartyVerification
+      summary: Retrieve customer information from JCE
+      description: Retrieve customer demographic and identification information from the JCE service.
+      operationId: RetrieveJceInformation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JceRetrieveRequest'
+      responses:
+        '200':
+          description: Successful JCE information retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JceRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /PartyReferenceDataDirectory/Retrieve:
+    get:
+      tags:
+        - CR - PartyReferenceDataDirectoryEntry
+      summary: Retrieve customer onboarding and personal information
+      description: Retrieve customer reference, demographic, contact, compliance, spouse and employment information for a customer in an onboarding process using the application identifier.
+      operationId: RetrievePartyReferenceDataDirectoryInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process used to retrieve the customer information.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Customer information successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyReferenceDataDirectoryRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /PartyReferenceDataDirectory/DemographicInformation/Update:
+    patch:
+      tags:
+        - BQ - Demographics
+      summary: Update demographic information
+      description: Update customer demographic, nationality, residence, contact, card, employment and politically exposed person information.
+      operationId: UpdateDemographicInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DemographicInformationUpdateRequest'
+      responses:
+        '200':
+          description: Demographic information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemographicInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/DemographicInformation/Retrieve:
+    get:
+      tags:
+        - BQ - Demographics
+      summary: Retrieve demographic information
+      description: Retrieve customer demographic, nationality, residence, contact, card, employment and politically exposed person information.
+      operationId: RetrieveDemographicInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Demographic information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveDemographicInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/ProfessionalInformation/Update:
+    patch:
+      tags:
+        - BQ - Demographics
+      summary: Update professional information
+      description: Update customer academic, occupation, profession and employment information.
+      operationId: UpdateProfessionalInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalInformationUpdateRequest'
+      responses:
+        '200':
+          description: Professional information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/ProfessionalInformation/Retrieve:
+    get:
+      tags:
+        - BQ - Demographics
+      summary: Retrieve professional information
+      description: Retrieve customer academic, occupation, profession and employment information.
+      operationId: RetrieveProfessionalInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Professional information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveProfessionalInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/IncomeInformation/Update:
+    patch:
+      tags:
+        - BQ - Financial
+      summary: Update income and source of funds information
+      description: Update customer income, income distribution, government supplier status and source of funds information.
+      operationId: UpdateIncomeAndFundSourceInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeAndFundSourceUpdateRequest'
+      responses:
+        '200':
+          description: Income and source of funds information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomeAndFundSourceUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/IncomeInformation/Retrieve:
+    get:
+      tags:
+        - BQ - Financial
+      summary: Retrieve income and source of funds information
+      description: Retrieve customer income, income distribution, government supplier status and source of funds information.
+      operationId: RetrieveIncomeAndFundSourceInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Income and source of funds information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveIncomeAndFundSourceUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestmentInformation/Update:
+    patch:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Update investment information
+      description: Update customer wealth, liquidity, investment preferences, objectives and risk profile information.
+      operationId: UpdateInvestmentInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestmentInformationUpdateRequest'
+      responses:
+        '200':
+          description: Investment information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestmentInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestmentInformation/Retrieve:
+    get:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Retrieve investment information
+      description: Retrieve customer wealth, liquidity, investment preferences, objectives and risk profile information.
+      operationId: RetrieveInvestmentInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Investment information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveInvestmentInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/AccountsInformation/Update:
+    patch:
+      tags:
+        - BQ - Financial
+      summary: Update bank accounts information
+      description: Update customer bank account information in local and foreign currency.
+      operationId: UpdateAccountsInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountsInformationUpdateRequest'
+      responses:
+        '200':
+          description: Bank accounts information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/AccountsInformation/Retrieve:
+    get:
+      tags:
+        - BQ - Financial
+      summary: Retrieve bank accounts information
+      description: Retrieve customer bank account information in local and foreign currency.
+      operationId: RetrieveAccountsInformation
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Bank accounts information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveAccountsInformationUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestmentKnowledge/Update:
+    patch:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Update investment knowledge information
+      description: Update customer investment knowledge, investment experience and qualified investor profile information.
+      operationId: UpdateInvestmentKnowledge
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestmentKnowledgeUpdateRequest'
+      responses:
+        '200':
+          description: Investment knowledge information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestmentKnowledgeUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestmentKnowledge/Retrieve:
+    get:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Retrieve investment knowledge information
+      description: Retrieve customer investment knowledge, investment experience and qualified investor profile information.
+      operationId: RetrieveInvestmentKnowledge
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Investment knowledge information successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveInvestmentKnowledgeUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestorProfile/Retrieve:
+    get:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Retrieve investor profile result
+      description: Retrieve the investor profile and profile determination associated with a customer identification.
+      operationId: RetrieveInvestorProfile
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      responses:
+        '200':
+          description: Investor profile successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestorProfileRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/InvestorProfile/Update:
+    put:
+      tags:
+        - BQ - InvestmentProfile
+      summary: Update investor profile result
+      description: Update the investor profile and profile determination associated with a customer identification.
+      operationId: UpdateInvestorProfile
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+        - in: query
+          name: applicationId
+          required: true
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestorProfileRetrieveRequest'
+      responses:
+        '200':
+          description: Investor profile successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestorProfileRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /PartyReferenceDataDirectory/CustomerExistence/Retrieve:
+    get:
+      tags:
+        - BQ - PartyVerification
+      summary: Retrieve customer existence
+      description: Retrieve whether a customer exists in the Party Reference Data Directory based on identification type and identification number.
+      operationId: RetrieveCustomerExistence
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          schema:
+            type: string
+            example: "40222151504"
+        - in: header
+          name: identificationType
+          required: false
+          schema:
+            type: string
+            example: "Cedula"
+      responses:
+        '200':
+          description: Customer existence successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerExistenceRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # =======================================================================
+  # SALES PRODUCT AGREEMENT
+  # =======================================================================
+  /SalesProductAgreement/TermsandConditions/Retrieve:
+    get:
+      tags:
+        - BQ - LegalTerms
+      summary: Retrieve product agreement information
+      description: Retrieve documents associated with a product agreement.
+      operationId: RetrieveFile
+      parameters:
+        - in: query
+          name: productid
+          required: false
+          description: Unique identifier of the banking product associated with the product agreement document.
+          schema:
+            type: string
+            example: "PROD001"
+        - in: query
+          name: version
+          required: false
+          description: Associated document version.
+          schema:
+            type: string
+            example: "TAC001"
+      responses:
+        '200':
+          description: Product agreement documents successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaCRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /SalesProductAgreement/TermsandConditions/Evaluate:
+    post:
+      tags:
+        - BQ - LegalTerms
+      summary: Evaluate terms and conditions acceptance
+      description: Endpoint used to register and evaluate customer acceptance of terms and conditions associated with a product agreement.
+      operationId: EvaluateTermsAndConditions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TermsAndConditionsEvaluateRequest'
+      responses:
+        '200':
+          description: Terms and conditions successfully evaluated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermsAndConditionsEvaluateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    # ---------------------------------------------------------
+    # SHARED COMMON SCHEMAS
+    # ---------------------------------------------------------
+    Value:
+      type: object
+      description: Generic value container.
+      properties:
+        Value:
+          type: string
+          description: Value.
+          example: "123456"
+
+    Identifier:
+      type: object
+      description: Unique identifier information.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    Name:
+      type: string
+      description: Name object/string.
+      example: "Name Example"
+
+    Text:
+      type: object
+      description: Text object.
+      properties:
+        Text:
+          type: string
+          description: Text value.
+          example: "Description or textual content."
+
+    Date:
+      type: object
+      description: Date value.
+      properties:
+        DateContent:
+          type: string
+          format: string
+          description: Date content.
+          example: "15-06-2026"
+
+    ApplicationId:
+      type: string
+      description: Unique identifier of the onboarding application process.
+      example: "APP-20260529-0001"
+
+    Currency:
+      type: string
+      description: Currency code or currency name.
+      example: "DOP"
+
+    AmountValue:
+      type: object
+      description: Amount value container.
+      properties:
+        AmountValue:
+          $ref: '#/components/schemas/Value'
+
+    Amount:
+      type: object
+      description: Monetary amount information.
+      properties:
+        AmountValue:
+          $ref: '#/components/schemas/Value'
+        AmountCurrency:
+          $ref: '#/components/schemas/Currency'
+
+    # ---------------------------------------------------------
+    # SHARED PARTY/CUSTOMER SCHEMAS
+    # ---------------------------------------------------------
+    PartyIdentificationType:
+      type: string
+      description: Type of customer identification document.
+      example: "Cedula"
+
+    PartyIdentification:
+      type: object
+      description: Customer identification details.
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationType'
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    PartyName:
+      type: object
+      description: Customer name information.
+      properties:
+        FirstName:
+          type: string
+          example: "JUAN"
+        LastName:
+          type: string
+          example: "PEREZ"
+        SecondSurname:
+          type: string
+          example: "GARCIA"
+
+    PartyType:
+      type: string
+      description: Type of customer.
+      example: "Persona Fisica"
+
+    ContactDetails:
+      type: object
+      description: Generic set of communication channels associated with the customer.
+      properties:
+        EmailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+        MobilePhoneNumber:
+          $ref: '#/components/schemas/MobilePhoneNumber'
+        ResidencePhoneNumber:
+          $ref: '#/components/schemas/ResidencePhoneNumber'
+        OfficePhoneNumber:
+          $ref: '#/components/schemas/OfficePhoneNumber'
+
+    PartyReference:
+      type: object
+      description: Core customer identification and personal information.
+      properties:
+        PartyType:
+          $ref: '#/components/schemas/PartyType'        
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+        PartyName:
+          $ref: '#/components/schemas/PartyName'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+
+    InvolvedParty:
+      type: object
+      description: Customer involved in the process.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+
+    # ---------------------------------------------------------
+    # CUSTOMER BEHAVIOR INSIGHTS SCHEMAS
+    # ---------------------------------------------------------
+    RetrieveRestrictiveListsInsightResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RestrictiveListsInsightData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-19T15:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    RestrictiveListsInsightData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Restrictive lists insight retrieved successfully"
+
+    # ---------------------------------------------------------
+    # CUSTOMER PRODUCT AND SERVICE DIRECTORY SCHEMAS
+    # ---------------------------------------------------------
+    RegisterCustomerProductRequest:
+      type: object
+      properties:
+        CustomerProductAndServiceDirectoryEntry:
+          $ref: '#/components/schemas/CustomerProductAndServiceDirectoryEntry'
+
+    CustomerProductAndServiceDirectoryEntry:
+      type: object
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+        ProductAgreementReference:
+          $ref: '#/components/schemas/ProductAgreement'
+
+    ProductAgreement:
+      type: object
+      description: Product agreement information.
+      properties:
+        ProductReference:
+          $ref: '#/components/schemas/BankingProduct'
+        AgreementReference:
+          $ref: '#/components/schemas/Agreement'
+
+    BankingProduct:
+      type: object
+      description: Banking product information.
+      properties:
+        ProductIdentification:
+          $ref: '#/components/schemas/ProductIdentification'
+        ProductName:
+          $ref: '#/components/schemas/Name'
+        ProductType:
+          $ref: '#/components/schemas/BankingProductType'
+        ProductDescription:
+          $ref: '#/components/schemas/Text'
+
+    ProductIdentification:
+      type: object
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    BankingProductType:
+      type: string
+      example: "BrokeredProduct"
+
+    RegisterCustomerProductResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RegisterCustomerProductData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-15T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    RegisterCustomerProductData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Customer banking product successfully registered"
+
+    # ---------------------------------------------------------
+    # PARTY REFERENCE DATA DIRECTORY SCHEMAS
+    # ---------------------------------------------------------
+    PartyReferenceDataDirectoryEntry:
+      type: object
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+        Demographics:
+          $ref: '#/components/schemas/Demographics'
+
+    Demographics:
+      type: object
+      properties:
+        BirthDate:
+          $ref: '#/components/schemas/Date'
+        Sex:
+          $ref: '#/components/schemas/Sex'
+        BirthCountry:
+          $ref: '#/components/schemas/BirthCountry'
+        BirthPlace:
+          $ref: '#/components/schemas/BirthPlace'
+        Nacionality:
+          $ref: '#/components/schemas/Nacionality'
+
+    PartyReferenceDataDirectoryEntryResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/PartyReferenceDataDirectoryEntryData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    PartyReferenceDataDirectoryEntryData:
+      type: object
+      properties:
+        CreateBeneficiariesPayment:
+          type: boolean
+          example: true
+        Message:
+          type: string
+          example: "Successful"
+
+    JceRetrieveRequest:
+      type: object
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/JcePartyReference'
+
+    JcePartyReference:
+      type: object
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/Identifier'
+
+    JceRetrieveResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/JceRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    JceRetrieveData:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/PartyName'
+        Demographics:
+          $ref: '#/components/schemas/Demographics'
+        PartyReference:
+          $ref: '#/components/schemas/PartyReferenceData'
+
+    PartyReferenceData:
+      type: object
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyReferenceDataDirectoryRetrieveResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/PartyReferenceDataDirectoryRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    PartyReferenceDataDirectoryRetrieveData:
+      type: object
+      properties:
+        ApplicationIdentification:
+          $ref: '#/components/schemas/ApplicationIdentification'
+        PartyReference:
+          $ref: '#/components/schemas/PartyReferenceUpdate'
+        Demographics:
+          $ref: '#/components/schemas/DemographicsUpdate'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        SpouseReference:
+          $ref: '#/components/schemas/SpouseReference'
+        Employment:
+          $ref: '#/components/schemas/Employment'
+
+    ApplicationIdentification:
+      type: object
+      properties:
+        ApplicationId:
+          $ref: '#/components/schemas/ApplicationId'
+
+    PartyReferenceUpdate:
+      type: object
+      properties:
+        PartyType:
+          $ref: '#/components/schemas/PartyType'        
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+        PartyName:
+          $ref: '#/components/schemas/PartyName'
+        PartyAddress:
+          $ref: '#/components/schemas/PartyAddress'
+        PartyCountryOfResidence:
+          $ref: '#/components/schemas/PartyCountryOfResidence'
+
+    PartyCountryOfResidence:
+      type: object
+      properties:
+        Country:
+          $ref: '#/components/schemas/Country'
+
+    Country:
+      type: string
+      example: "REPUBLICA DOMINICANA"
+
+    PartyAddress:
+      type: object
+      properties:
+        ResidentialAddress:
+          $ref: '#/components/schemas/ResidentialAddress'
+
+    ResidentialAddress:
+      type: object
+      properties:
+        AddressLine:
+          $ref: '#/components/schemas/AddressLine'
+        TownName:
+          $ref: '#/components/schemas/TownName'
+        ResidenceSector:
+          $ref: '#/components/schemas/ResidenceSector'
+        ResidenceProvince:
+          $ref: '#/components/schemas/ResidenceProvince'
+        UnitedStatesResidentialAddress:
+          $ref: '#/components/schemas/UnitedStatesResidentialAddress'
+        UnitedStatesPostalAddress:
+          $ref: '#/components/schemas/UnitedStatesPostalAddress'
+
+    DemographicsUpdate:
+      type: object
+      properties:
+        BirthDate:
+          $ref: '#/components/schemas/Date'
+        Sex:
+          $ref: '#/components/schemas/Sex'
+        BirthCountry:
+          $ref: '#/components/schemas/BirthCountry'
+        BirthPlace:
+          $ref: '#/components/schemas/BirthPlace'
+        Nacionality:
+          $ref: '#/components/schemas/Nacionality'
+        CivilStatus:
+          $ref: '#/components/schemas/CivilStatus'
+        AcademicLevel:
+          $ref: '#/components/schemas/AcademicLevel'
+        Profession:
+          $ref: '#/components/schemas/Profession'
+        Occupation:
+          $ref: '#/components/schemas/Occupation'
+        SecondNationalityIndicator:
+          $ref: '#/components/schemas/SecondNationalityIndicator'
+        ThirdNationalityIndicator:
+          $ref: '#/components/schemas/ThirdNationalityIndicator'
+        UnitedStatesCitizenshipOrGreenCardIndicator:
+          $ref: '#/components/schemas/UnitedStatesCitizenshipOrGreenCardIndicator'
+
+    SpouseReference:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/SpousePartyName'
+        PartyIdentification:
+          $ref: '#/components/schemas/SpousePartyIdentification'
+        ContactDetails:
+          $ref: '#/components/schemas/SpouseContactDetails'
+
+    SpousePartyName:
+      type: object
+      properties:
+        FirstName:
+          $ref: '#/components/schemas/SpouseFirstName'
+        LastName:
+          $ref: '#/components/schemas/SpouseLastName'
+
+    SpouseContactDetails:
+      type: object
+      properties:
+        EmailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+
+    SpouseFirstName:
+      type: string
+      example: "MARIA"
+    SpouseLastName:
+      type: string
+      example: "GOMEZ"
+
+    Employment:
+      type: object
+      properties:
+        EmployerName:
+          $ref: '#/components/schemas/EmployerName'
+        EmploymentStartDate:
+          $ref: '#/components/schemas/Date'
+        EmploymentSector:
+          $ref: '#/components/schemas/EmploymentSector'
+        EmploymentPosition:
+          $ref: '#/components/schemas/EmploymentPosition'
+        MonthlyEmploymentIncome:
+          $ref: '#/components/schemas/MonthlyEmploymentIncome'
+        EmployerAddress:
+          $ref: '#/components/schemas/EmployerAddress'
+        EmployerCity:
+          $ref: '#/components/schemas/EmployerCity'
+
+    # Extracted Primitives for Party Data
+    Sex:
+      type: string
+      example: "M"
+    BirthCountry:
+      type: string
+      example: "REPUBLICA DOMINICANA"
+    BirthPlace:
+      type: string
+      example: "SANTO DOMINGO"
+    Nacionality:
+      type: string
+      example: "DOMINICANO"
+    CivilStatus:
+      type: string
+      example: "SOLTERO/A"
+    AcademicLevel:
+      type: string
+      example: "UNIVERSITARIO"
+    Profession:
+      type: string
+      example: "INGENIERO"
+    EmailAddress:
+      type: string
+      example: "cliente@email.com"
+    MobilePhoneNumber:
+      type: string
+      example: "8095551234"
+    ResidencePhoneNumber:
+      type: string
+      example: "8095555678"
+    OfficePhoneNumber:
+      type: string
+      example: "8095559999"
+    AddressLine:
+      type: string
+      example: "Av. Winston Churchill 123"
+    TownName:
+      type: string
+      example: "Santo Domingo"
+    ResidenceSector:
+      type: string
+      example: "NACO"
+    ResidenceProvince:
+      type: string
+      example: "SANTO DOMINGO"
+    UnitedStatesResidentialAddress:
+      type: string
+      example: "123 Main Street, Miami, FL"
+    UnitedStatesPostalAddress:
+      type: string
+      example: "PO Box 12345, Miami, FL"
+    EmployerName:
+      type: string
+      example: "BHD"
+    EmploymentSector:
+      type: string
+      example: "FINANCIERO"
+    EmploymentPosition:
+      type: string
+      example: "ANALISTA"
+    MonthlyEmploymentIncome:
+      type: number
+      example: 75000
+    EmployerAddress:
+      type: string
+      example: "Av. Winston Churchill 123"
+    EmployerCity:
+      type: string
+      example: "SANTO DOMINGO"
+
+    Occupation:
+      type: object
+      properties:
+        Name:
+          $ref: '#/components/schemas/Name'
+        Independent:
+          $ref: '#/components/schemas/Independent'     
+        Entrepreneur:
+          $ref: '#/components/schemas/Entrepreneur'
+        Investor:
+          $ref: '#/components/schemas/Investor'                               
+        StockMarket:
+          $ref: '#/components/schemas/StockMarket' 
+        PrivatedInvestor:
+          $ref: '#/components/schemas/PrivatedInvestor'              
+        BusinessPropertySale:
+          $ref: '#/components/schemas/BusinessPropertySale'
+
+    Investor:
+      type: object
+      properties:
+        PropertyInvestments:
+          $ref: '#/components/schemas/PropertyInvestments'
+
+    PropertyInvestments:
+      type: string
+      example: "Terrenos"
+    StockMarket:
+      type: string
+      example: "No"
+    PrivatedInvestor:
+      type: string
+      example: "No"
+    BusinessPropertySale:
+      type: object
+      properties: 
+        BusinessPropertySaleIndicator:
+          type: boolean
+          example: true
+        Amount:
+          $ref: '#/components/schemas/AmountValue'
+
+    EmployeeNumber:
+      type: integer
+      example: 700
+
+    Independent:
+      type: object
+      properties:
+        FundSource:
+          $ref: '#/components/schemas/FundSource'
+        TaxRegime:
+          $ref: '#/components/schemas/TaxRegime'
+        WithholdingAgentIndicator:
+          $ref: '#/components/schemas/WithholdingAgentIndicator'
+
+    TaxRegime:
+      type: string
+      example: "Comun"
+    WithholdingAgentIndicator:
+      type: boolean
+      example: true
+    CompanyActivity:
+      type: string
+      example: "Tecnologia"
+    PercentageShares:
+      type: number
+      example: 60
+    GrossIncomeLastYear:
+      type: number
+      example: 123300000
+    YearsCompanyExistence:
+      type: number
+      example: 5
+
+    Entrepreneur:
+      type: object
+      properties:
+        CompanyName:
+          $ref: '#/components/schemas/EmployerName'
+        EmployeeNumber:
+          $ref: '#/components/schemas/EmployeeNumber'            
+        CompanyAddress:
+          $ref: '#/components/schemas/EmployerAddress'    
+        CompanyActivity:
+          $ref: '#/components/schemas/CompanyActivity'                    
+        PercentageShares:
+          $ref: '#/components/schemas/PercentageShares' 
+        GrossIncomeLastYear:
+          $ref: '#/components/schemas/GrossIncomeLastYear' 
+        YearsCompanyExistence:
+          $ref: '#/components/schemas/YearsCompanyExistence' 
+
+    SecondNationalityIndicator:
+      type: boolean
+      example: true
+    ThirdNationalityIndicator:
+      type: boolean
+      example: true
+    UnitedStatesCitizenshipOrGreenCardIndicator:
+      type: boolean
+      example: false
+
+    PassportInformation:
+      type: object
+      properties:
+        PassportNumber:
+          $ref: '#/components/schemas/PassportNumber'
+        IssuingCountry:
+          $ref: '#/components/schemas/IssuingCountry'
+        IssueDate:
+          $ref: '#/components/schemas/Date'
+
+    PassportNumber:
+      type: string
+      example: "RD1234567"
+    IssuingCountry:
+      type: string
+      example: "REPUBLICA DOMINICANA"
+
+    SpousePartyIdentification:
+      type: object
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/SpouseIdentificationType'
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    SpouseIdentificationType:
+      type: string
+      example: "Cedula"
+
+    DemographicInformationUpdateRequest:
+      type: object
+      properties:
+        Demographics:
+          $ref: '#/components/schemas/DemographicInformation'
+        ContactDetails:
+          $ref: '#/components/schemas/DemographicContactDetails'
+        PoliticalExposure:
+          $ref: '#/components/schemas/PoliticalExposure'
+        SpouseReference:
+          $ref: '#/components/schemas/SpouseReference'
+        RestrictiveListCheck:
+          type: array
+          items:
+            $ref: '#/components/schemas/RestrictiveListCheck'
+
+    DemographicInformation:
+      type: object
+      properties:
+        UnitedStatesCitizenshipOrGreenCardIndicator:
+          $ref: '#/components/schemas/UnitedStatesCitizenshipOrGreenCardIndicator'
+        SecondNationalityIndicator:
+          $ref: '#/components/schemas/SecondNationalityIndicator'
+        ThirdNationalityIndicator:
+          $ref: '#/components/schemas/ThirdNationalityIndicator'
+        PartyCountryOfResidence:
+          $ref: '#/components/schemas/PartyCountryOfResidence'
+        ResidentialAddress:
+          $ref: '#/components/schemas/ResidentialAddress'
+        PassportInformation:
+          $ref: '#/components/schemas/PassportInformation'
+        CivilStatus:
+          $ref: '#/components/schemas/CivilStatus'
+        SocialSecurityInformation:
+          $ref: '#/components/schemas/SocialSecurityInformation'
+        SecondNationalityInformation:
+          $ref: '#/components/schemas/SecondNationalityInformation'
+        ThirdNationalityInformation:
+          $ref: '#/components/schemas/ThirdNationalityInformation'
+        CardInformation:
+          $ref: '#/components/schemas/CardInformation'
+
+    DemographicContactDetails:
+      type: object
+      properties:
+        ResidencePhoneNumber:
+          $ref: '#/components/schemas/ResidencePhoneNumber'
+        MobilePhoneNumber:
+          $ref: '#/components/schemas/MobilePhoneNumber'
+        UnitedStatesResidencePhoneNumber:
+          $ref: '#/components/schemas/UnitedStatesResidencePhoneNumber'
+        OtherPhoneNumber:
+          $ref: '#/components/schemas/OtherPhoneNumber'
+        OtherPhoneNumberType:
+          $ref: '#/components/schemas/OtherPhoneNumberType'
+
+    UnitedStatesResidencePhoneNumber:
+      type: string
+      example: "+13055551234"
+    OtherPhoneNumber:
+      type: string
+      example: "8095557777"
+    OtherPhoneNumberType:
+      type: string
+      example: "Trabajo"
+
+    SocialSecurityInformation:
+      type: object
+      properties:
+        SocialSecurityNumber:
+          type: string
+          example: "123456789"
+        SocialSecurityCardName:
+          type: string
+          example: "JUAN PEREZ"
+
+    SecondNationalityInformation:
+      type: object
+      properties:
+        Nationality:
+          $ref: '#/components/schemas/Nacionality'
+        IdentificationDocument:
+          type: string
+          example: "A12345678"
+        PassportExpirationDate:
+          $ref: '#/components/schemas/Date'
+
+    ThirdNationalityInformation:
+      type: object
+      properties:
+        Nationality:
+          $ref: '#/components/schemas/Nacionality'
+        IdentificationDocument:
+          type: string
+          example: "B12345678"
+        PassportExpirationDate:
+          $ref: '#/components/schemas/Date'
+
+    CardInformation:
+      type: object
+      properties:
+        CardHolderName:
+          type: string
+          example: "JUAN PEREZ"
+
+    PoliticalExposure:
+      type: object
+      properties:
+        PepParty:
+          type: boolean
+          example: false
+        NotHighRiskClientDeclare:
+          type: boolean
+          example: true
+        PoliticalExposureRelated:
+          $ref: '#/components/schemas/PoliticalExposureRelated'
+        RelatedParty:
+          $ref: '#/components/schemas/RelatedParty'
+
+    PoliticalExposureRelated:
+      type: boolean
+      example: true
+
+    RelatedParty:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/PartyName'
+        InstitutionName:
+          type: string
+          example: "INSTITUCION PUBLICA"
+        PositionName:
+          type: string
+          example: "DIRECTOR"
+        RelationshipType:
+          type: string
+          example: "MADRE"
+        Country:
+          $ref: '#/components/schemas/Country'
+
+    RestrictiveListCheck:
+      type: object
+      properties:
+        RestrictiveListName:
+          type: string
+          example: "SARLAF"
+        CheckDate:
+          $ref: '#/components/schemas/Date'
+        CheckResult:
+          $ref: '#/components/schemas/CheckResult'
+
+    CheckResult:
+      type: string
+      example: "NotMatched"
+
+    DemographicInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/DemographicInformationUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    DemographicInformationUpdateData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveDemographicInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/DemographicInformationUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    ProfessionalInformationUpdateRequest:
+      type: object
+      properties:
+        Demographics:
+          $ref: '#/components/schemas/ProfessionalDemographics'
+        Employment:
+          $ref: '#/components/schemas/ProfessionalEmployment'
+        ContactDetails:
+          $ref: '#/components/schemas/ProfessionalContactDetails'
+
+    ProfessionalDemographics:
+      type: object
+      properties:
+        AcademicLevel:
+          $ref: '#/components/schemas/AcademicLevel'
+        Occupation:
+          $ref: '#/components/schemas/Occupation'
+        Profession:
+          $ref: '#/components/schemas/Profession'
+        EmploymentType:
+          $ref: '#/components/schemas/EmploymentType'
+
+    EmploymentType:
+      type: string
+      example: "Empleado"
+
+    ProfessionalEmployment:
+      type: object
+      properties:
+        EmployerName:
+          $ref: '#/components/schemas/EmployerName'
+        EmploymentSector:
+          $ref: '#/components/schemas/EmploymentSector'
+        CompanySector:
+          $ref: '#/components/schemas/CompanySector'
+        EmploymentPosition:
+          $ref: '#/components/schemas/EmploymentPosition'
+        EmploymentStartDate:
+          $ref: '#/components/schemas/Date'
+        EmploymentSeniority:
+          $ref: '#/components/schemas/EmploymentSeniority'
+        EmployerAddress:
+          $ref: '#/components/schemas/EmployerAddress'
+        EmployerCity:
+          $ref: '#/components/schemas/EmployerCity'
+        EmployerProvince:
+          $ref: '#/components/schemas/EmployerProvince'
+        EmployerCountry:
+          $ref: '#/components/schemas/EmployerCountry'
+
+    CompanySector:
+      type: string
+      example: "Privado"
+      enum: [Publico, Privado]
+
+    EmploymentSeniority:
+      type: object
+      properties:
+        Years:
+          type: integer
+          example: 3
+        Months:
+          type: integer
+          example: 6
+
+    EmployerProvince:
+      type: string
+      example: "SANTO DOMINGO"
+
+    EmployerCountry:
+      type: string
+      example: "REPUBLICA DOMINICANA"
+
+    ProfessionalContactDetails:
+      type: object
+      properties:
+        WorkEmailAddress:
+          $ref: '#/components/schemas/WorkEmailAddress'
+        OfficePhoneNumber:
+          $ref: '#/components/schemas/OfficePhoneNumber'
+
+    WorkEmailAddress:
+      type: string
+      format: email
+      example: "juan.perez@empresa.com"
+
+    ProfessionalInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/ProfessionalInformationUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    ProfessionalInformationUpdateData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveProfessionalInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/ProfessionalInformationUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    IncomeAndFundSourceUpdateRequest:
+      type: object
+      properties:
+        Employment:
+          $ref: '#/components/schemas/IncomeEmployment'
+        AnnualIncome:
+          $ref: '#/components/schemas/AnnualIncome'
+        AnnualExpense:
+          $ref: '#/components/schemas/AnnualExpense'          
+        SpouseIncome:
+          $ref: '#/components/schemas/SpouseIncome'
+        IncomeDistribution:
+          $ref: '#/components/schemas/IncomeDistribution'
+        GovernmentSupplier:
+          $ref: '#/components/schemas/GovernmentSupplier'
+        FundSource:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundSource'
+
+    IncomeEmployment:
+      type: object
+      properties:
+        MonthlyEmploymentIncome:
+          $ref: '#/components/schemas/MonthlyEmploymentIncome'
+
+    AnnualIncome:
+      type: number
+      example: 1200000
+    AnnualExpense:
+      type: number
+      example: 1200000
+
+    SpouseIncome:
+      type: object
+      properties:
+        AnnualIncome:
+          $ref: '#/components/schemas/AnnualIncome'
+
+    IncomeDistribution:
+      type: object
+      properties:
+        WorkIncomePercentage:
+          $ref: '#/components/schemas/Percentage'
+        OtherIncome:
+          $ref: '#/components/schemas/OtherIncome'
+        CapitalIncomePercentage:
+          $ref: '#/components/schemas/Percentage'
+        OtherIncomeDescription:
+          $ref: '#/components/schemas/OtherIncomeDescription'
+        OtherIncomePercentage:
+          $ref: '#/components/schemas/Percentage'
+
+    Percentage:
+      type: number
+      example: 50
+    OtherIncome:
+      type: number
+      example: 25000
+    OtherIncomeDescription:
+      type: string
+      example: "Alquiler de inmueble"
+
+    GovernmentSupplier:
+      type: object
+      properties:
+        GovernmentSupplierIndicator:
+          type: boolean
+          example: false
+        GovernmentIncomePercentage:
+          $ref: '#/components/schemas/Percentage'
+
+    FundSource:
+      type: object
+      properties:
+        SourceOfFunds:
+          type: string
+          example: "Salario"
+
+    IncomeAndFundSourceUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/IncomeAndFundSourceUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    IncomeAndFundSourceUpdateData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveIncomeAndFundSourceUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/IncomeAndFundSourceUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestmentInformationUpdateRequest:
+      type: object
+      properties:
+        WealthProfile:
+          $ref: '#/components/schemas/WealthProfile'
+        InvestmentProfile:
+          $ref: '#/components/schemas/InvestmentProfile'
+        InvestmentObjective:
+          $ref: '#/components/schemas/InvestmentObjective'
+        RiskProfile:
+          $ref: '#/components/schemas/RiskProfile'
+
+    WealthProfile:
+      type: object
+      properties:
+        TotalPatrimonyYearOneLabel:
+          $ref: '#/components/schemas/PatrimonyYearLabel'
+        TotalPatrimonyYearOne:
+          $ref: '#/components/schemas/AmountValue'
+        TotalPatrimonyYearTwoLabel:
+          $ref: '#/components/schemas/PatrimonyYearLabel'
+        TotalPatrimonyYearTwo:
+          $ref: '#/components/schemas/AmountValue'
+        LiquidAssetsYearOne:
+          $ref: '#/components/schemas/AmountValue'
+        LiquidAssetsYearTwo:
+          $ref: '#/components/schemas/AmountValue'
+        TotalAssets:
+          $ref: '#/components/schemas/AmountValue'
+        TotalLiquidAssets:
+          $ref: '#/components/schemas/AmountValue'
+        TotalPatrimony:
+          $ref: '#/components/schemas/AmountValue'
+        EstimatedLiabilities:
+          $ref: '#/components/schemas/AmountValue'
+
+    PatrimonyYearLabel:
+      type: string
+      example: "Año 1 patrimonio"
+
+    InvestmentProfile:
+      type: object
+      properties:
+        InvestmentAmount:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestmentAmountByCurrency'
+        InvestmentTerm:
+          $ref: '#/components/schemas/InvestmentTerm'
+        AnticipatedTransactionValue:
+          $ref: '#/components/schemas/Amount'
+        LiquidAssetsInvestmentPercentage:
+          $ref: '#/components/schemas/Percentage'
+        InvestmentObjectiveTerm:
+          $ref: '#/components/schemas/InvestmentObjectiveTerm'
+        DesiredProfitability:
+          $ref: '#/components/schemas/Percentage'
+
+    InvestmentAmountByCurrency:
+      type: object
+      properties:
+        InvestmentCurrency:
+          $ref: '#/components/schemas/Currency'
+        InvestmentAmount:
+          $ref: '#/components/schemas/AmountValue'
+
+    InvestmentTerm:
+      type: string
+      example: "Corto plazo"
+
+    InvestmentObjectiveTerm:
+      type: string
+      example: "5"
+
+    InvestmentObjective:
+      type: object
+      properties:
+        InvestmentObjective:
+          $ref: '#/components/schemas/InvestmentObjectiveDescription'
+        InterestObjective:
+          $ref: '#/components/schemas/InterestObjectiveDescription'
+
+    InvestmentObjectiveDescription:
+      type: string
+      example: "Crecimiento de capital"
+    InterestObjectiveDescription:
+      type: string
+      example: "Reinvertir intereses"
+
+    RiskProfile:
+      type: object
+      properties:
+        CapitalLossAbsorptionCapacity:
+          $ref: '#/components/schemas/CapitalLossAbsorptionCapacity'
+        InvestmentRiskLevel:
+          $ref: '#/components/schemas/InvestmentRiskLevel'
+
+    CapitalLossAbsorptionCapacity:
+      type: string
+      example: "Media"
+    InvestmentRiskLevel:
+      type: string
+      example: "Moderado"
+
+    InvestmentInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/InvestmentInformationUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestmentInformationUpdateData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveInvestmentInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/InvestmentInformationUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    AccountsInformationUpdateRequest:
+      type: object
+      properties:
+        LocalCurrencyAccount:
+          $ref: '#/components/schemas/BankAccountInformation'
+        ForeignCurrencyAccount:
+          $ref: '#/components/schemas/BankAccountInformation'
+
+    BankAccountInformation:
+      type: object
+      properties:
+        BankEntity:
+          $ref: '#/components/schemas/BankEntity'
+        Account:
+          $ref: '#/components/schemas/Account'
+        Currency:
+          $ref: '#/components/schemas/Currency'
+
+    BankEntity:
+      type: object
+      properties:
+        BankName:
+          $ref: '#/components/schemas/BankName'
+
+    BankName:
+      type: string
+      example: "Banco BHD"
+
+    Account:
+      type: object
+      properties:
+        AccountType:
+          $ref: '#/components/schemas/AccountType'
+        AccountIdentification:
+          $ref: '#/components/schemas/AccountIdentification'
+        AccountName:
+          $ref: '#/components/schemas/AccountName'
+
+    AccountType:
+      type: string
+      example: "Cuenta Corriente"
+
+    AccountIdentification:
+      type: object
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    AccountName:
+      type: string
+      example: "JUAN PEREZ"
+
+    AccountsInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/AccountsInformationUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    AccountsInformationUpdateData:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveAccountsInformationUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/AccountsInformationUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestmentKnowledgeUpdateRequest:
+      type: object
+      properties:
+        EconomicActivity:
+          $ref: '#/components/schemas/EconomicActivity'
+        InvestmentKnowledge:
+          $ref: '#/components/schemas/InvestmentKnowledge'
+        InvestmentExperience:
+          $ref: '#/components/schemas/InvestmentExperience'
+        QualifiedInvestorProfile:
+          $ref: '#/components/schemas/QualifiedInvestorProfile'
+
+    EconomicActivity:
+      type: object
+      properties:
+        CiiuCode:
+          $ref: '#/components/schemas/CiiuCode'
+
+    CiiuCode:
+      type: string
+      example: "6201"
+
+    InvestmentKnowledge:
+      type: object
+      properties:
+        VariableIncomeKnowledge:
+          $ref: '#/components/schemas/KnowledgeAnswer'
+        PrimaryMarketKnowledge:
+          $ref: '#/components/schemas/KnowledgeAnswer'
+        BestExecutionKnowledge:
+          $ref: '#/components/schemas/KnowledgeAnswer'
+        StockMarketKnowledge:
+          $ref: '#/components/schemas/KnowledgeAnswer'
+
+    KnowledgeAnswer:
+      type: string
+      example: "Respuesta del cliente"
+
+    InvestmentExperience:
+      type: object
+      properties:
+        InvestmentInstruments:
+          $ref: '#/components/schemas/InvestmentInstruments'
+        InvestmentExperienceTime:
+          $ref: '#/components/schemas/InvestmentExperienceTime'
+        LocalOrInternationalInvestorExperience:
+          $ref: '#/components/schemas/LocalOrInternational'
+        AnnualOperations:
+          $ref: '#/components/schemas/AnnualOperations'
+        AnnualInvestmentVolume:
+          $ref: '#/components/schemas/Amount'
+
+    InvestmentInstruments:
+      type: string
+      example: "Bonos, Acciones, Fondos Mutuos"
+    InvestmentExperienceTime:
+      type: string
+      example: "3"
+    LocalOrInternational:
+      type: string
+      example: "Limitada"
+    AnnualOperations:
+      type: integer
+      example: 12
+
+    QualifiedInvestorProfile:
+      type: object
+      properties:
+        OperationsThresholdIndicator:
+          $ref: '#/components/schemas/OperationsThresholdIndicator'
+        AssetsThresholdIndicator:
+          $ref: '#/components/schemas/AssetsThresholdIndicator'
+        InvestmentExperienceIndicator:
+          $ref: '#/components/schemas/InvestmentExperienceIndicator'
+
+    OperationsThresholdIndicator:
+      type: boolean
+      example: true
+    AssetsThresholdIndicator:
+      type: boolean
+      example: false
+    InvestmentExperienceIndicator:
+      type: boolean
+      example: true
+
+    InvestmentKnowledgeUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/InvestmentKnowledgeResult'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestmentKnowledgeResult:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "Successful"
+
+    RetrieveInvestmentKnowledgeUpdateResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/InvestmentKnowledgeUpdateRequest'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestorProfileRetrieveRequest:
+      type: object
+      properties:
+        InvestorProfileResult:
+          type: object
+          properties:
+            ProfileDetermination:
+              $ref: '#/components/schemas/ProfileDetermination'
+
+    InvestorProfileRetrieveResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/InvestorProfileResult'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    InvestorProfileResult:
+      type: object
+      properties:
+        InvestorProfile:
+          $ref: '#/components/schemas/InvestorProfile'
+        ProfileDetermination:
+          $ref: '#/components/schemas/ProfileDetermination'
+        PartyReference:
+          $ref: '#/components/schemas/PartyReferenceData'
+
+    InvestorProfile:
+      type: string
+      example: "Moderado"
+    ProfileDetermination:
+      type: string
+      example: "No Profesional"
+
+    CustomerExistenceRetrieveResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/CustomerExistenceRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    CustomerExistenceRetrieveData:
+      type: object
+      properties:
+        CustomerExistence:
+          $ref: '#/components/schemas/CustomerExistence'
+
+    CustomerExistence:
+      type: object
+      properties:
+        CustomerExistsIndicator:
+          type: boolean
+          example: true
+
+    # ---------------------------------------------------------
+    # SALES PRODUCT AGREEMENT SCHEMAS
+    # ---------------------------------------------------------
+    TaCRetrieveResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/TaCData'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    TaCData:
+      type: object
+      properties:
+        LegalTerms:
+          $ref: '#/components/schemas/LegalTerms'
+
+    LegalTerms:
+      type: object
+      properties:
+        ApplicableLawReference:
+          $ref: '#/components/schemas/Law'
+        ApplicableLawInterpretation:
+          $ref: '#/components/schemas/Text'
+
+    Law:
+      type: object
+      properties:
+        LawIdentifier:
+          type: string
+          example: "TAC001"
+        LawVersion:
+          type: string
+          example: "1.0"
+
+    TermsAndConditionsEvaluateRequest:
+      type: object
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+        ProductInstanceReference:
+          $ref: '#/components/schemas/ProductAgreement'
+        LegalTerms:
+          $ref: '#/components/schemas/LegalTerms'
+        TermsAndConditionsAcceptance:
+          $ref: '#/components/schemas/TermsAndConditionsAcceptance'
+
+    TermsAndConditionsAcceptance:
+      type: object
+      properties:
+        Date:
+          $ref: '#/components/schemas/Date'
+
+    Agreement:
+      type: object
+      properties:
+        AgreementIdentification:
+          $ref: '#/components/schemas/AgreementIdentification'
+        AgreementStatus:
+          $ref: '#/components/schemas/AgreementLifecycle'
+
+    AgreementLifecycle:
+      type: object
+      properties:
+        AgreementLifecycle:
+          $ref: '#/components/schemas/Status'
+
+    AgreementIdentification:
+      $ref: '#/components/schemas/Identifier'
+
+    Status:
+      type: object
+      properties:
+        Status:
+          type: string
+          example: "Accepted"
+
+    TermsAndConditionsEvaluateResponse:
+      type: object
+      properties:
+        OnboardingResponse:
+          $ref: '#/components/schemas/OnboardingResponse'
+
+    OnboardingResponse:
+      type: object
+      properties:
+        ApplicationId:
+          type: string
+          example: "ABC1234"
+
+    # ---------------------------------------------------------
+    # COMMON STANDARD RESPONSE & ERROR SCHEMAS
+    # ---------------------------------------------------------
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+        Message:
+          type: string
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          example: "400BAD"
+        Message:
+          type: string
+          example: "Bad request"
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        Timestamp:
+          type: string
+          format: date-time
+        RequestId:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        Field:
+          type: string
+          example: "FieldExample"
+        Code:
+          type: string
+          example: "INVALID_VALUE"
+        Message:
+          type: string
+          example: "Detailed error message."
+
+  # =======================================================================
+  # COMMON STANDARD RESPONSES (UNIFIED)
+  # =======================================================================
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    MethodNotAllowed:
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    RequestTimeout:
+      description: Request Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    UnprocessableContent:
+      description: Unprocessable Content
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    BadGateway:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    ServiceUnavailable:
+      description: Service Unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    GatewayTimeout:
+      description: Gateway Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

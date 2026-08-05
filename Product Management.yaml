@@ -1,0 +1,554 @@
+openapi: 3.0.3
+info:
+  title: Product Directory - BHD
+  description: API used to retrieve banking product directory information and product details that support customer product selection processes.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /ProductDirectory/ChoosingInvestmentFund/Retrieve:
+    get:
+      tags:
+        - BQ - InvestmentFund
+      summary: Retrieve available investment funds
+      description: Retrieve the available investment fund options for a customer during the product selection process.
+      operationId: RetrieveChoosingInvestmentFund
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification number.
+          schema:
+            type: string
+            example: "40222151504"
+
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+
+      responses:
+        '200':
+          description: Investment fund options successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoosingInvestmentFundRetrieveResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /ProductDirectory/ChoosingInvestmentFund/Register:
+    post:
+      tags:
+        - BQ - InvestmentFund
+      summary: Register selected investment fund
+      description: Register the investment fund option selected by the customer during the product selection process.
+      operationId: RegisterChoosingInvestmentFund
+      parameters:
+        - in: header
+          name: identificationNumber
+          required: true
+          description: Customer identification number.
+          schema:
+            type: string
+            example: "40222151504"
+
+        - in: header
+          name: identificationType
+          required: false
+          description: Customer identification document type.
+          schema:
+            type: string
+            example: "Cedula"
+
+        - in: query
+          name: applicationId
+          required: true
+          description: Unique identifier of the onboarding application process.
+          schema:
+            $ref: '#/components/schemas/ApplicationId'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChoosingInvestmentFundRegisterRequest'
+
+      responses:
+        '200':
+          description: Investment fund selection successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoosingInvestmentFundRegisterResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+  schemas:
+    ChoosingInvestmentFundRetrieveResponse:
+      type: object
+      description: Successful investment fund options retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/ChoosingInvestmentFundRetrieveData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-07-29T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    ChoosingInvestmentFundRetrieveData:
+      type: object
+      description: Investment fund selection information associated with the customer and onboarding application.
+      properties:
+        ApplicationIdentification:
+          $ref: '#/components/schemas/ApplicationIdentification'
+
+        CustomerReference:
+          $ref: '#/components/schemas/CustomerReference'
+
+        InvestmentFund:
+          type: array
+          description: List of available investment funds. Each fund contains the same descriptive fields.
+          items:
+            $ref: '#/components/schemas/InvestmentFund'
+
+    ApplicationIdentification:
+      type: object
+      description: Identifies the onboarding application process.
+      properties:
+        ApplicationId:
+          $ref: '#/components/schemas/ApplicationId'
+
+    ApplicationId:
+      type: string
+      description: Unique identifier of the onboarding application process.
+      example: "APP-20260729-0001"
+
+    CustomerReference:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification details.
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationType'
+
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    PartyIdentificationType:
+      type: string
+      description: Type of customer identification document.
+      example: "Cedula"
+
+    Value:
+      type: object
+      description: Value object.
+      properties:
+        Value:
+          type: string
+          description: Identification value.
+          example: "40222151504"
+
+    InvestmentFund:
+      type: object
+      description: Investment fund information available for customer selection.
+      properties:
+        FundName:
+          $ref: '#/components/schemas/FundName'
+
+        IncomeType:
+          $ref: '#/components/schemas/IncomeType'
+
+        RiskLevel:
+          $ref: '#/components/schemas/RiskLevel'
+
+        CurrencyType:
+          $ref: '#/components/schemas/CurrencyType'
+
+        FundClassification:
+          $ref: '#/components/schemas/FundClassification'
+
+        FundDescription:
+          $ref: '#/components/schemas/FundDescription'
+
+    FundName:
+      type: string
+      description: Name of the investment fund.
+      example: "Fondo Mutuo BHD Liquidez"
+
+    IncomeType:
+      type: string
+      description: Type of income associated with the investment fund.
+      example: "Renta Fija"
+
+
+    RiskLevel:
+      type: string
+      description: Risk level associated with the investment fund.
+      example: "Moderado"
+
+
+    CurrencyType:
+      type: string
+      description: Currency type of the investment fund.
+      example: "DOP"
+
+    FundClassification:
+      type: string
+      description: Classification of the investment fund.
+      example: "Abierto"
+
+    FundDescription:
+      type: string
+      description: Description of the investment fund.
+      example: "Fondo de inversión orientado a preservar capital y generar rendimientos mediante instrumentos de renta fija."
+
+
+    ChoosingInvestmentFundRegisterRequest:
+      type: object
+      description: Request used to register the investment fund selected by the customer.
+      properties:
+        ApplicationIdentification:
+          $ref: '#/components/schemas/ApplicationIdentification'
+
+        CustomerReference:
+          $ref: '#/components/schemas/CustomerReference'
+
+        InvestmentFund:
+          type: array
+          description: List of investment funds selected or registered for the customer. Each fund contains the same descriptive fields returned by the retrieve operation.
+          items:
+            $ref: '#/components/schemas/InvestmentFund'
+
+    ChoosingInvestmentFundRegisterResponse:
+      type: object
+      description: Successful investment fund selection registration response.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the successful result.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: General message associated with the successful operation.
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/ChoosingInvestmentFundRegisterData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-07-29T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    ChoosingInvestmentFundRegisterData:
+      type: object
+      description: Investment fund registration result.
+      properties:
+        Message:
+          type: string
+          description: Registration result message.
+          example: "Investment fund selection successfully registered."
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+
+        Message:
+          type: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-07-29T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "applicationId"
+
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid request identifier."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

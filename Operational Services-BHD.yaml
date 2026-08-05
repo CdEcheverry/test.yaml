@@ -1,0 +1,371 @@
+openapi: 3.0.3
+
+info:
+  title: Issued Device Administration - BHD
+  description: API used to manage an issued device authentication process.
+  version: 1.0.0
+
+servers:
+  - url: https://api.bian.org/v1
+    description: Main BIAN server
+
+paths:
+  /IssuedDeviceAdministration/Otp/Validate:
+    post:
+      tags:
+        - BQ - TokenAssignment
+      summary: Validate OTP
+      description: Validate the OTP code sent to the customer as part of the authentication process.
+      operationId: ValidateOtp
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpValidationRequest'
+
+      responses:
+        '200':
+          description: OTP successfully validated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpValidationResponse'
+
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accept'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unathorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+components:
+
+  schemas:
+
+    OtpValidationRequest:
+      type: object
+      description: Request used to validate an OTP code.
+      required:
+        - CustomerReference
+        - OtpReference
+      properties:
+
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+
+        OtpReference:
+          $ref: '#/components/schemas/OtpReference'
+
+    InvolvedParty:
+      type: object
+      description: Reference to the customer requesting OTP validation.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+        ContactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+    PartyReference:
+      type: object
+      description: Customer information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+       
+    Value:
+      type: object
+      description: Value container.
+      properties:
+        Value:
+          type: string
+          description: Value of the identifier.
+          example: "DNI299875349BA"
+    ContactDetails:
+      type: object
+      description: Generic set of communication channels associated with the customer.
+      properties:
+        EmailAddress:
+          type: string
+          description: Main electronic mail address used for official communications.
+          example: "contacto@mail.com"
+   
+    OtpReference:
+      type: object
+      description: OTP information to validate.
+      properties:
+        PasswordValue:
+          $ref: '#/components/schemas/OtpValue'
+
+    OtpValue:
+      type: object
+      description: OTP code value.
+      properties:
+        Value:
+          type: string
+          description: One-Time Password sent to the customer.
+          example: "123456"
+
+    OtpValidationResponse:
+      type: object
+      description: Successful OTP validation response.
+      properties:
+
+        ResponseCode:
+          type: string
+          description: Unique response code.
+          example: "200OK"
+
+        Message:
+          type: string
+          description: Operation result message.
+          example: "OTP validated successfully"
+
+        Data:
+          $ref: '#/components/schemas/OtpValidationData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Response generation timestamp.
+          example: "2026-08-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          description: Request identifier.
+          example: "req_12345"
+
+    OtpValidationData:
+      type: object
+      description: OTP validation result.
+      properties:
+
+        OtpMessage:
+          type: string
+          description: Indicates whether the OTP validation was successful.
+          example: "VALID"
+
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+
+        ResponseCode:
+          type: string
+          description: Error response code.
+          example: "400BAD"
+
+        Message:
+          type: string
+          description: Error message.
+          example: "Bad request"
+
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-20T10:30:00Z"
+
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    Error:
+      type: object
+      description: Error detail.
+      properties:
+
+        Field:
+          type: string
+          example: "OTP"
+
+        Code:
+          type: string
+          example: "INVALID_OTP"
+
+        Message:
+          type: string
+          example: "The OTP provided is invalid."
+
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
+  responses:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accept:
+      description: Accept
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accept"
+            Message: "Accept"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
+
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Unathorized:
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    MethodNotAllowed:
+      description: MethodNotAllowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    RequestTimeout:
+      description: RequestTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    UnprocessableContent:
+      description: UnprocessableContent
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    NotImplemented:
+      description: NotImplemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    BadGateway:
+      description: BadGateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    ServiceUnavailable:
+      description: ServiceUnavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+
+    GatewayTimeout:
+      description: GatewayTimeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

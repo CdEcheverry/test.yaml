@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://api.bian.org/v1
+  - url: https://pb-az-ca-onb-dev-001.yellowdesert-c481e7fa.eastus2.azurecontainerapps.io:8080
     description: Main BIAN server
 
 paths:
@@ -35,11 +35,11 @@ paths:
         '201':
           $ref: '#/components/responses/Created'
         '202':
-          $ref: '#/components/responses/Accept'
+          $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#/components/responses/Unathorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -109,11 +109,66 @@ paths:
         '201':
           $ref: '#/components/responses/Created'
         '202':
-          $ref: '#/components/responses/Accept'
+          $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#/components/responses/Unathorized'
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /PartyAuthentication/Password/Evaluate:
+    post:
+      tags:
+        - BQ - Password
+      summary: Evaluate password authentication
+      description: Evaluate customer authenticity using username and password credentials.
+      operationId: EvaluatePassword
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluatePasswordRequest'
+
+      responses:
+        '200':
+          description: Password successfully evaluated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluatePasswordResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -144,9 +199,6 @@ components:
     EvaluatePinRequest:
       type: object
       description: Request used to validate a customer PIN.
-      required:
-        - PartyAuthenticationAssessment
-        - Pin
       properties:
         PartyAuthenticationAssessment:
           $ref: '#/components/schemas/PartyAuthenticationAssessment'
@@ -277,7 +329,65 @@ components:
           description: Biometric evaluation result message.
           example: "Biometric evaluation successfully processed"
 
-    HTTPError:
+    EvaluatePasswordRequest:
+      type: object
+      description: Request used to validate customer username and password credentials.
+      properties:
+        PartyAuthenticationAssessment:
+          $ref: '#/components/schemas/PasswordAuthenticationAssessment'
+
+        Password:
+          $ref: '#/components/schemas/Password'
+
+    PasswordAuthenticationAssessment:
+      type: object
+      description: Authentication assessment information for the customer using password credentials.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+
+    Password:
+      type: object
+      description: Customer password information.
+      properties:
+        AuthenticationPasswordPresentedValue:
+          type: string
+          description: Password entered by the customer.
+          example: "Password123!"
+
+    EvaluatePasswordResponse:
+      type: object
+      description: Successful password evaluation response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+
+        Message:
+          type: string
+          example: "Successful"
+
+        Data:
+          $ref: '#/components/schemas/EvaluatePasswordData'
+
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-04T16:10:00Z"
+
+        RequestId:
+          type: string
+          example: "REQ-123456"
+
+    EvaluatePasswordData:
+      type: object
+      description: Password evaluation result.
+      properties:
+        Message:
+          type: string
+          example: "Password successfully validated"
+
+    HttpError:
       type: object
       description: Standard structure for API error responses.
       properties:
@@ -313,115 +423,148 @@ components:
           type: string
           example: "The PIN provided is invalid."
 
+    Response:
+      type: object
+      description: Standard structure for successful responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique response code that identifies the result.
+
+        Message:
+          type: string
+          description: General message associated with the operation result.
+
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+
+
+
+
   responses:
     Created:
       description: Created
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
-
-    Accept:
-      description: Accept
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "201CREATED"
+            Message: "Created"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"            
+    Accepted:
+      description: Accepted
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/Response'
+          example: 
+            ResponseCode: "202Accepted"
+            Message: "Accepted"
+            Timestamp: "2026-07-31T10:30:00Z"
+            RequestId: "req_12345"  
 
     BadRequest:
       description: BadRequest
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
-    Unathorized:
-      description: Unathorized
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     NotFound:
       description: NotFound
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     MethodNotAllowed:
       description: MethodNotAllowed
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     RequestTimeout:
       description: RequestTimeout
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     Conflict:
       description: Conflict
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     UnprocessableContent:
       description: UnprocessableContent
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     TooManyRequests:
       description: TooManyRequests
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     InternalServerError:
       description: InternalServerError
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     NotImplemented:
       description: NotImplemented
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     BadGateway:
       description: BadGateway
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     ServiceUnavailable:
       description: ServiceUnavailable
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'
 
     GatewayTimeout:
       description: GatewayTimeout
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HTTPError'
+            $ref: '#/components/schemas/HttpError'

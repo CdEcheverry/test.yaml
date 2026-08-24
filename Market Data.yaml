@@ -7,7 +7,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://api.bian.org/v1
+  - url: http://192.168.1.4/
     description: Main BIAN server
 
 paths:

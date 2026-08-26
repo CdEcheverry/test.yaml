@@ -1,8 +1,7 @@
 openapi: 3.0.3
-
 info:
-  title: Systems Operations - BHD
-  description: API to Management the onboarding step for an application process.
+  title: Systems Operations & Administration - BHD
+  description: API to manage onboarding steps and system access configurations (roles, permissions, and modules).
   version: 1.0.0
 
 servers:
@@ -10,7 +9,6 @@ servers:
     description: Main BIAN server
 
 paths:
- 
   /SystemsOperations/OnboardingSteps/Retrieve:
     get:
       tags:
@@ -18,7 +16,6 @@ paths:
       summary: Retrieve onboarding step
       description: Retrieve the current onboarding step associated with a customer application process.
       operationId: RetrieveOnboardingStep
-
       parameters:
         - in: header
           name: identificationNumber
@@ -27,7 +24,6 @@ paths:
           schema:
             type: string
             example: "00112345678"
-
         - in: header
           name: identificationType
           required: false
@@ -35,7 +31,6 @@ paths:
           schema:
             type: string
             example: "Cedula"
-
         - in: query
           name: applicationId
           required: true
@@ -43,7 +38,6 @@ paths:
           schema:
             type: string
             example: "AP-446655440000"
-
       responses:
         '200':
           description: Successful onboarding step retrieval.
@@ -51,7 +45,313 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OnboardingStepsRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
 
+  /SystemsAdministration/RoleManagement/Retrieve:
+    get:
+      tags:
+        - BQ - RoleManagement
+      summary: Retrieve roles
+      description: Retrieve the configured roles including role name, role description, configured permissions quantity and role status.
+      operationId: RetrieveRoles
+      responses:
+        '200':
+          description: Roles successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /SystemsAdministration/RoleManagement/Register:
+    post:
+      tags:
+        - BQ - RoleManagement
+      summary: Register a new role
+      description: Register a new role with role name, role description and role status indicator.
+      operationId: RegisterRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRegisterRequest'
+      responses:
+        '200':
+          description: Role successfully registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleRegisterResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /SystemsAdministration/RoleManagement/Update:
+    put:
+      tags:
+        - BQ - RoleManagement
+      summary: Update role
+      description: Update role name, role description and role status.
+      operationId: UpdateRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdateRequest'
+      responses:
+        '200':
+          description: Role successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleUpdateResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /SystemsAdministration/RoleManagement/Permissions/Retrieve:
+    get:
+      tags:
+        - BQ - RoleManagement
+      summary: Retrieve role permissions
+      description: Retrieve the modules and configured permission indicators assigned to a role.
+      operationId: RetrieveRolePermissions
+      parameters:
+        - in: query
+          name: roleName
+          required: true
+          description: Name of the role used to retrieve the configured permissions.
+          schema:
+            $ref: '#/components/schemas/RoleName'
+      responses:
+        '200':
+          description: Role permissions successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermissionsRetrieveResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /SystemsAdministration/RoleManagement/Permissions/Update:
+    put:
+      tags:
+        - BQ - RoleManagement
+      summary: Update role permissions
+      description: Update the modules and configured permission indicators assigned to a role.
+      operationId: UpdateRolePermissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolePermissionsUpdateRequest'
+      responses:
+        '200':
+          description: Role permissions successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermissionsUpdateResponse'
+        '201':
+          $ref: '#/components/responses/Created'
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+
+  /SystemsAdministration/Modules/Retrieve:
+    get:
+      tags:
+        - BQ - ModuleManagement
+      summary: Retrieve system modules
+      description: Retrieve the system modules available to configure role permissions.
+      operationId: RetrieveSystemModules
+      responses:
+        '200':
+          description: System modules successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemModulesRetrieveResponse'
         '201':
           $ref: '#/components/responses/Created'
         '202':
@@ -86,9 +386,8 @@ paths:
           $ref: '#/components/responses/GatewayTimeout'
 
 components:
-
   schemas:
-
+    # Onboarding Schemas
     OnboardingStepsRetrieveResponse:
       type: object
       description: Successful onboarding step retrieval response.
@@ -97,21 +396,17 @@ components:
           type: string
           description: Unique response code that identifies the successful result.
           example: "200OK"
-
         Message:
           type: string
           description: General message associated with the successful operation.
           example: "Successful"
-
         Data:
           $ref: '#/components/schemas/OnboardingStepsRetrieveData'
-
         Timestamp:
           type: string
           format: date-time
           description: Date and time when the response was generated.
           example: "2026-08-20T10:30:00Z"
-
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
@@ -123,13 +418,10 @@ components:
       properties:
         OnboardingStep:
           $ref: '#/components/schemas/OnboardingStep'
-
         ApplicationReference:
           $ref: '#/components/schemas/ApplicationReference'
-
         PartyReference:
           $ref: '#/components/schemas/PartyReference'
-
 
     ApplicationReference:
       type: object
@@ -160,7 +452,6 @@ components:
           type: string
           example: "00112345678"
 
-
     OnboardingStep:
       type: object
       description: Current onboarding step where the customer is located.
@@ -170,39 +461,302 @@ components:
           description: Code of the current onboarding step.
           example: "DEMOGRAPHIC_INFORMATION"
 
-    HttpError:
+    # Role & Administration Schemas
+    RoleRegisterRequest:
       type: object
+      description: Request payload used to register a new role in the system.
+      properties:
+        Role:
+          $ref: '#/components/schemas/RoleRegister'
+
+    RoleRegister:
+      type: object
+      description: Role registration information.
+      properties:
+        RoleName:
+          $ref: '#/components/schemas/RoleName'
+        RoleDescription:
+          $ref: '#/components/schemas/RoleDescription'
+        RoleStatusIndicator:
+          $ref: '#/components/schemas/RoleStatusIndicator'
+
+    RoleRegisterResponse:
+      type: object
+      description: Successful role registration response.
       properties:
         ResponseCode:
           type: string
-          example: "400BAD"
-
+          example: "200OK"
         Message:
           type: string
-          example: "Bad request"
-
-        Errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RoleRegisterData'
         Timestamp:
           type: string
           format: date-time
-
+          example: "2026-08-06T14:30:00Z"
         RequestId:
           type: string
+          example: "req_78901"
 
-    Error:
+    RoleRegisterData:
       type: object
+      description: Role registration result.
       properties:
-        Field:
-          type: string
-        Code:
-          type: string
         Message:
           type: string
+          example: "El rol fue creado exitosamente."
 
+    RoleUpdateRequest:
+      type: object
+      description: Request payload used to update a role in the system.
+      properties:
+        Role:
+          $ref: '#/components/schemas/RoleUpdate'
+
+    RoleUpdate:
+      type: object
+      description: Role update information.
+      properties:
+        RoleName:
+          $ref: '#/components/schemas/RoleName'
+        RoleDescription:
+          $ref: '#/components/schemas/RoleDescription'
+        RoleStatusIndicator:
+          $ref: '#/components/schemas/RoleStatusIndicator'
+
+    RoleUpdateResponse:
+      type: object
+      description: Successful role update response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RoleUpdateData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-06T14:30:00Z"
+        RequestId:
+          type: string
+          example: "req_78901"
+
+    RoleUpdateData:
+      type: object
+      description: Role update result.
+      properties:
+        Role:
+          $ref: '#/components/schemas/RoleUpdate'
+
+    RoleRetrieveResponse:
+      type: object
+      description: Successful role retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RoleRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-06T14:30:00Z"
+        RequestId:
+          type: string
+          example: "req_78901"
+
+    RoleRetrieveData:
+      type: object
+      description: Configured roles retrieved information.
+      properties:
+        Role:
+          type: array
+          description: List of configured roles.
+          items:
+            $ref: '#/components/schemas/RoleRetrieve'
+
+    RoleRetrieve:
+      type: object
+      description: Configured role information.
+      properties:
+        RoleName:
+          $ref: '#/components/schemas/RoleName'
+        RoleDescription:
+          $ref: '#/components/schemas/RoleDescription'
+        PermissionQuantity:
+          type: integer
+          description: Number of permissions configured for the role.
+          example: 12
+        RoleStatusIndicator:
+          $ref: '#/components/schemas/RoleStatusIndicator'
+
+    RolePermissionsUpdateRequest:
+      type: object
+      description: Request payload used to update permissions configured for a role.
+      properties:
+        RoleName:
+          $ref: '#/components/schemas/RoleName'
+        ModulePermission:
+          type: array
+          description: List of modules and permission indicators configured for the role.
+          items:
+            $ref: '#/components/schemas/RoleModulePermission'
+
+    RolePermissionsRetrieveResponse:
+      type: object
+      description: Successful role permissions retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RolePermissionsData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-06T17:35:00Z"
+        RequestId:
+          type: string
+          example: "req_78901"
+
+    RolePermissionsUpdateResponse:
+      type: object
+      description: Successful role permissions update response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/RolePermissionsData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-06T17:35:00Z"
+        RequestId:
+          type: string
+          example: "req_78901"
+
+    RolePermissionsData:
+      type: object
+      description: Role permissions information grouped by module.
+      properties:
+        RoleName:
+          $ref: '#/components/schemas/RoleName'
+        ModulePermission:
+          type: array
+          description: List of modules and configured permission indicators assigned to the role.
+          items:
+            $ref: '#/components/schemas/RoleModulePermission'
+
+    RoleModulePermission:
+      type: object
+      description: Module permission information configured for a role.
+      properties:
+        ModuleName:
+          type: string
+          description: Name of the module associated with the permission configuration.
+          example: "Gestion de usuarios"
+        ModuleDescription:
+          type: string
+          description: Description of the module associated with the role permissions.
+          example: "Modulo para administrar usuarios del backoffice"
+        PermissionIndicator:
+          $ref: '#/components/schemas/ModulePermissionIndicator'
+
+    ModulePermissionIndicator:
+      type: object
+      description: Permission indicators configured for the module.
+      properties:
+        CreateIndicator:
+          type: boolean
+          description: Indicates whether the role has permission to create records in the module.
+          example: true
+        RetrieveIndicator:
+          type: boolean
+          description: Indicates whether the role has permission to retrieve records in the module.
+          example: true
+        UpdateIndicator:
+          type: boolean
+          description: Indicates whether the role has permission to update records in the module.
+          example: true
+        DeleteIndicator:
+          type: boolean
+          description: Indicates whether the role has permission to delete records in the module.
+          example: false
+
+    RoleName:
+      type: string
+      description: Role assigned to the backoffice user.
+      example: "Analista"
+
+    RoleDescription:
+      type: string
+      description: Detailed description of the role purpose and responsibilities.
+      example: "Rol encargado de gestionar las cuentas de los clientes del banco"
+
+    RoleStatusIndicator:
+      type: boolean
+      description: Indicates whether the role is active.
+      example: true
+
+    SystemModulesRetrieveResponse:
+      type: object
+      description: Successful system modules retrieval response.
+      properties:
+        ResponseCode:
+          type: string
+          example: "200OK"
+        Message:
+          type: string
+          example: "Successful"
+        Data:
+          $ref: '#/components/schemas/SystemModulesRetrieveData'
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-12T16:05:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    SystemModulesRetrieveData:
+      type: object
+      description: System modules available for permission configuration.
+      properties:
+        Module:
+          type: array
+          description: List of system modules.
+          items:
+            $ref: '#/components/schemas/SystemModule'
+
+    SystemModule:
+      type: object
+      description: System module information available for role permission assignment.
+      properties:
+        ModuleName:
+          type: string
+          description: Name of the system module.
+          example: "Gestion de usuarios"
+        ModuleDescription:
+          type: string
+          description: Description of the system module.
+          example: "Modulo para administrar usuarios del backoffice"
+
+    # Shared Schemas
     Response:
       type: object
       description: Standard structure for successful responses.
@@ -210,22 +764,60 @@ components:
         ResponseCode:
           type: string
           description: Unique response code that identifies the result.
-
         Message:
           type: string
           description: General message associated with the operation result.
-
         Timestamp:
           type: string
           format: date-time
           description: Date and time when the response was generated.
-
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
 
+    HttpError:
+      type: object
+      description: Standard structure for API error responses.
+      properties:
+        ResponseCode:
+          type: string
+          description: Unique code that identifies the response result.
+          example: "400BAD"
+        Message:
+          type: string
+          description: General response message associated with the operation result.
+          example: "Bad request"
+        Errors:
+          type: array
+          description: List of errors returned by the service.
+          items:
+            $ref: '#/components/schemas/Error'
+        Timestamp:
+          type: string
+          format: date-time
+          description: Date and time when the response was generated.
+          example: "2026-05-14T10:30:00Z"
+        RequestId:
+          type: string
+          description: Unique identifier associated with the request transaction.
+          example: "req_12345"
 
-
+    Error:
+      type: object
+      description: Error detail returned when the operation cannot be completed successfully.
+      properties:
+        Field:
+          type: string
+          description: Name of the field associated with the error.
+          example: "RoleName"
+        Code:
+          type: string
+          description: Specific error code associated with the validation or processing issue.
+          example: "INVALID_VALUE"
+        Message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid request identifier."
 
   responses:
     Created:
@@ -234,22 +826,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-          example: 
+          example:
             ResponseCode: "201CREATED"
             Message: "Created"
             Timestamp: "2026-07-31T10:30:00Z"
-            RequestId: "req_12345"            
+            RequestId: "req_12345"
+
     Accepted:
       description: Accepted
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-          example: 
+          example:
             ResponseCode: "202Accepted"
             Message: "Accepted"
             Timestamp: "2026-07-31T10:30:00Z"
-            RequestId: "req_12345"  
+            RequestId: "req_12345"
+
     BadRequest:
       description: BadRequest
       content:

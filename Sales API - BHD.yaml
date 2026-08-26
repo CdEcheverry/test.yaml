@@ -1,10 +1,7 @@
 openapi: 3.0.3
-
 info:
-  title: Sales API - BHD
-  description: >
-    Unified API for the Sales Domain. This API handles customer onboarding 
-    processes, including creation, updates, and status retrieval.
+  title: Sales Product - BHD
+  description: API to retrieve active onboarding process information for a customer.
   version: 1.0.0
 
 servers:
@@ -12,9 +9,6 @@ servers:
     description: Main BIAN server
 
 paths:
-  # =======================================================================
-  # SALES PRODUCT SUBDOMAIN
-  # =======================================================================
   /SalesProduct/customer/{documentNumber}/Email/Retrieve:
     get:
       tags:
@@ -22,6 +16,7 @@ paths:
       summary: Retrieve active onboarding process for a customer
       description: Retrieve information related to an active onboarding process associated with a customer document number and email address.
       operationId: RetrieveCustomerOnboardingStatus
+
       parameters:
         - in: path
           name: documentNumber
@@ -30,6 +25,7 @@ paths:
           schema:
             type: string
             example: "123456789"
+
         - in: query
           name: emailAddress
           required: false
@@ -38,13 +34,16 @@ paths:
             type: string
             format: email
             example: "customer@email.com"
+
       responses:
         '200':
           description: Successful onboarding status retrieval.
+       
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingRetrieveResponse'
+
         '201':
           $ref: '#/components/responses/Created'
         '202':
@@ -85,12 +84,14 @@ paths:
       summary: Create customer onboarding process
       description: Create a new onboarding process for a customer, including document identification, email and terms and conditions acceptance.
       operationId: CreateCustomerOnboarding
+
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerOnboardingCreateRequest'
+
       responses:
         '200':
           description: Successful onboarding process creation.
@@ -98,6 +99,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingCreateResponse'
+
         '201':
           $ref: '#/components/responses/Created'
         '202':
@@ -138,6 +140,7 @@ paths:
       summary: Update customer onboarding process
       description: Update customer onboarding process information, including email and selected brokerage account type.
       operationId: UpdateCustomerOnboarding
+
       parameters:
         - in: query
           name: applicationId
@@ -146,12 +149,14 @@ paths:
           schema:
             type: string
             example: "APP-20260615-0001"
+
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomerOnboardingUpdateRequest'
+
       responses:
         '200':
           description: Successful onboarding process update.
@@ -159,6 +164,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingUpdateResponse'
+
         '201':
           $ref: '#/components/responses/Created'
         '202':
@@ -192,74 +198,11 @@ paths:
         '504':
           $ref: '#/components/responses/GatewayTimeout'
 
+
 components:
+
   schemas:
-    # ---------------------------------------------------------
-    # SHARED COMMON SCHEMAS
-    # ---------------------------------------------------------
-    Value:
-      type: object
-      description: Generic value object.
-      properties:
-        Value:
-          type: string
-          description: Identifier value.
-          example: "ONB-20260515-0001"
 
-    Identifier:
-      type: object
-      description: Unique identifier structure.
-      properties:
-        IdentifierValue:
-          $ref: '#/components/schemas/Value'
-
-    EmailAddress:
-      type: string
-      description: Customer email address.
-      example: "cliente@email.com"
-
-    PartyIdentification:
-      type: object
-      description: Customer identification information.
-      properties:
-        PartyIdentificationType:
-          type: string
-          description: Type of customer identification document.
-          example: "Cedula"
-        IdentifierValue:
-          $ref: '#/components/schemas/Value'
-
-    PartyReference:
-      type: object
-      description: Customer party reference information.
-      properties:
-        PartyIdentification:
-          $ref: '#/components/schemas/PartyIdentification'
-
-    ContactReference:
-      type: object
-      description: Customer contact reference information.
-      properties:
-        EmailAddress:
-          $ref: '#/components/schemas/EmailAddress'
-
-    CustomerOnboardingRole:
-      type: string
-      description: Role of the customer within the onboarding process.
-      example: "Titular"
-
-    TermsAndConditionsAcceptance:
-      type: object
-      description: Indicates whether the customer has accepted the terms and conditions associated with the onboarding process.
-      properties:
-        AcceptedIndicator:
-          type: boolean
-          description: Indicates whether the customer accepted the terms and conditions.
-          example: true
-
-    # ---------------------------------------------------------
-    # ONBOARDING RETRIEVE SCHEMAS
-    # ---------------------------------------------------------
     CustomerOnboardingRetrieveResponse:
       type: object
       description: Response containing onboarding process information for a customer.
@@ -267,11 +210,11 @@ components:
         ResponseCode:
           type: string
           description: Unique response code that identifies the successful result.
-          example: "200OK"
+          example: 200OK
         Message:
           type: string
           description: General message associated with the successful operation.
-          example: "Successful"
+          example: Successful
         Data:
           $ref: '#/components/schemas/OnboardingData'
         Timestamp:
@@ -282,8 +225,8 @@ components:
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
-          example: "req_12345"                 
-
+          example: req_12345 
+                 
     OnboardingData:
       type: object
       description: Response data.
@@ -298,41 +241,97 @@ components:
       type: object
       description: Represents an onboarding process associated with a banking product acquisition.
       properties:
+
         OnboardingProcessReference:
           $ref: '#/components/schemas/Identifier'
+
         TermsAndConditionsAcceptance:
           $ref: '#/components/schemas/TermsAndConditionsAcceptance'
+
+
         CustomerRole:
           $ref: '#/components/schemas/CustomerOnboardingRole'
+
         OnboardingStep:
           $ref: '#/components/schemas/OnboardingStep'
 
-    OnboardingStep:
+    TermsAndConditionsAcceptance:
       type: object
-      description: Current onboarding step where the customer is located.
+      description: Indicates whether the customer has accepted the terms and conditions associated with the onboarding process.
       properties:
-        StepCode:
-          type: string
-          description: Code of the current onboarding step.
-          example: "DEMOGRAPHIC_INFORMATION"
 
-    # ---------------------------------------------------------
-    # ONBOARDING CREATE SCHEMAS
-    # ---------------------------------------------------------
+        AcceptedIndicator:
+          type: boolean
+          description: Indicates whether the customer accepted the terms and conditions.
+          example: true
+
+    Identifier:
+      type: object
+      description: Unique identifier structure.
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    Value:
+      type: object
+      description: Generic value object.
+      properties:
+        Value:
+          type: string
+          description: Identifier value.
+          example: "ONB-20260515-0001"
+
+
     CustomerOnboardingCreateRequest:
       type: object
       description: Request used to create a customer onboarding process.
       properties:
         PartyReference:
           $ref: '#/components/schemas/PartyReference'
+
         ContactReference:
           $ref: '#/components/schemas/ContactReference'
+
         CustomerRole:
           $ref: '#/components/schemas/CustomerOnboardingRole'
+
         TermsAndConditionsAcceptance:
           $ref: '#/components/schemas/TermsAndConditionsAcceptance'
+
         LawReference:
           $ref: '#/components/schemas/LawReference'
+
+    PartyReference:
+      type: object
+      description: Customer party reference information.
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      description: Customer identification information.
+      properties:
+        PartyIdentificationType:
+          type: string
+          description: Type of customer identification document.
+          example: "Cedula"
+
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    ContactReference:
+      type: object
+      description: Customer contact reference information.
+
+      properties:
+        EmailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+
+    EmailAddress:
+      type: string
+      description: Customer email address.
+      example: cliente@email.com
 
     LawReference:
       type: object
@@ -351,17 +350,21 @@ components:
           type: string
           description: Unique response code that identifies the successful result.
           example: "200OK"
+
         Message:
           type: string
           description: General message associated with the successful operation.
           example: "Successful"
+
         Data:
           $ref: '#/components/schemas/OnboardingCreateData'
+
         Timestamp:
           type: string
           format: date-time
           description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
+
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
@@ -374,19 +377,20 @@ components:
         CustomerOnboarding:
           $ref: '#/components/schemas/CustomerOnboarding'
 
-    # ---------------------------------------------------------
-    # ONBOARDING UPDATE SCHEMAS
-    # ---------------------------------------------------------
+
     CustomerOnboardingUpdateRequest:
       type: object
       description: Request used to update customer onboarding process information.
       properties:
         PartyReference:
           $ref: '#/components/schemas/PartyReference'
+
         ContactReference:
           $ref: '#/components/schemas/ContactReference'
+
         BrokerageAccount:
           $ref: '#/components/schemas/BrokerageAccount'
+
         JointAccountParticipantReference:
           type: array
           description: List of participants to be added to the onboarding process when the selected brokerage account type is joint.
@@ -405,44 +409,6 @@ components:
       description: Type of brokerage account selected by the customer.
       example: "Individual"
 
-    JointAccountParticipantReference:
-      type: object
-      description: Reference information of a participant associated with a joint brokerage account onboarding process.
-      properties:
-        PartyReference:
-          $ref: '#/components/schemas/JointParticipantPartyReference'
-
-    JointParticipantPartyReference:
-      type: object
-      description: Joint account participant party reference information.
-      properties:
-        PartyName:
-          $ref: '#/components/schemas/JointParticipantPartyName'
-        PartyIdentification:
-          $ref: '#/components/schemas/PartyIdentification'
-        ContactReference:
-          $ref: '#/components/schemas/JointParticipantContactReference'
-
-    JointParticipantPartyName:
-      type: object
-      description: Joint account participant name information.
-      properties:
-        FirstName:
-          type: string
-          description: Participant first name.
-          example: "MARIA"
-        LastName:
-          type: string
-          description: Participant last name.
-          example: "GOMEZ"
-
-    JointParticipantContactReference:
-      type: object
-      description: Joint account participant contact information.
-      properties:
-        EmailAddress:
-          $ref: '#/components/schemas/EmailAddress'
-
     CustomerOnboardingUpdateResponse:
       type: object
       description: Response containing the onboarding update result.
@@ -451,17 +417,21 @@ components:
           type: string
           description: Unique response code that identifies the successful result.
           example: "200OK"
+
         Message:
           type: string
           description: General message associated with the successful operation.
           example: "Successful"
+
         Data:
           $ref: '#/components/schemas/OnboardingUpdateData'
+
         Timestamp:
           type: string
           format: date-time
           description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
+
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
@@ -476,9 +446,64 @@ components:
           description: Onboarding update result message.
           example: "Onboarding process successfully updated"
 
-    # ---------------------------------------------------------
-    # COMMON ERROR & RESPONSE SCHEMAS
-    # ---------------------------------------------------------
+    JointAccountParticipantReference:
+      type: object
+      description: Reference information of a participant associated with a joint brokerage account onboarding process.
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/JointParticipantPartyReference'
+
+    JointParticipantPartyReference:
+      type: object
+      description: Joint account participant party reference information.
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/JointParticipantPartyName'
+
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+        ContactReference:
+          $ref: '#/components/schemas/JointParticipantContactReference'
+
+    JointParticipantPartyName:
+      type: object
+      description: Joint account participant name information.
+      properties:
+        FirstName:
+          type: string
+          description: Participant first name.
+          example: "MARIA"
+
+        LastName:
+          type: string
+          description: Participant last name.
+          example: "GOMEZ"
+
+    JointParticipantContactReference:
+      type: object
+      description: Joint account participant contact information.
+      properties:
+        EmailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+
+    CustomerOnboardingRole:
+      type: string
+      description: Role of the customer within the onboarding process.
+      example: "Titular"
+
+
+    OnboardingStep:
+      type: object
+      description: Current onboarding step where the customer is located.
+      properties:
+        StepCode:
+          type: string
+          description: Code of the current onboarding step.
+          example: "DEMOGRAPHIC_INFORMATION"
+
+
+
     HttpError:
       type: object
       description: Standard structure for API error responses.
@@ -487,27 +512,31 @@ components:
           type: string
           format: string
           description: Unique code that identifies the response result.
-          example: "400BAD"
+          example: 400BAD
+
         Message:
           type: string
           format: string
           description: General response message associated with the operation result.
-          example: "Bad request"
+          example: Bad request
+
         Errors:
           type: array
           description: List of errors returned by the service.
           items:
             $ref: '#/components/schemas/Error'
+
         Timestamp:
           type: string
           format: string
           description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
+
         RequestId:
           type: string
           format: string
           description: Unique identifier associated with the request transaction.
-          example: "req_12345"
+          example: req_12345
 
     Error:
       type: object
@@ -516,15 +545,15 @@ components:
         Field:
           type: string
           description: Name of the field associated with the error.
-          example: "tycId"
+          example: tycId
         Code:
           type: string
           description: Specific error code associated with the validation or processing issue.
-          example: "INVALID_VALUE"
+          example: INVALID_VALUE
         Message:
           type: string
           description: Detailed error message.
-          example: "Invalid terms and conditions identifier."
+          example: Invalid terms and conditions identifier.
 
     Response:
       type: object
@@ -533,20 +562,23 @@ components:
         ResponseCode:
           type: string
           description: Unique response code that identifies the result.
+
         Message:
           type: string
           description: General message associated with the operation result.
+
         Timestamp:
           type: string
           format: date-time
           description: Date and time when the response was generated.
+
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
 
-  # =======================================================================
-  # COMMON STANDARD RESPONSES (UNIFIED)
-  # =======================================================================
+
+
+
   responses:
     Created:
       description: Created
@@ -570,86 +602,100 @@ components:
             Message: "Accepted"
             Timestamp: "2026-07-31T10:30:00Z"
             RequestId: "req_12345"  
+
     BadRequest:
-      description: Bad Request
+      description: BadRequest
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     NotFound:
-      description: Not Found
+      description: NotFound
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     MethodNotAllowed:
-      description: Method Not Allowed
+      description: MethodNotAllowed
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     RequestTimeout:
-      description: Request Timeout
+      description: RequestTimeout
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     Conflict:
       description: Conflict
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     UnprocessableContent:
-      description: Unprocessable Content
+      description: UnprocessableContent
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     TooManyRequests:
-      description: Too Many Requests
+      description: TooManyRequests
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     InternalServerError:
-      description: Internal Server Error
+      description: InternalServerError
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     NotImplemented:
-      description: Not Implemented
+      description: NotImplemented
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     BadGateway:
-      description: Bad Gateway
+      description: BadGateway
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     ServiceUnavailable:
-      description: Service Unavailable
+      description: ServiceUnavailable
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HttpError'
+
     GatewayTimeout:
-      description: Gateway Timeout
+      description: GatewayTimeout
       content:
         application/json:
           schema:

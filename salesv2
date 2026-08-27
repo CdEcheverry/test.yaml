@@ -1,0 +1,457 @@
+openapi: 3.0.3
+
+info:
+  title: Sales Product - BHD (Implemented)
+  description: >
+    OpenAPI describing the SalesProduct endpoints AS CURRENTLY IMPLEMENTED in the
+    Client.Api service. Reflects the real routes (api/ prefix), the ONDI response
+    envelope (with Errors and ResponseCode formatted as ONDI-{micro}-{op}-{code}),
+    and the actual input shapes. Note: Onboarding/Create is implemented under the
+    registry-verification group, receives query parameters (no body) and returns 201.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5146
+    description: Local development server
+  - url: https://pb-az-ca-eastus2-onb-dev-001.redforest-06a4197f.eastus2.azurecontainerapps.io
+    description: Dev environment
+
+paths:
+  /api/SalesProduct/customer/{documentNumber}/email/Retrieve:
+    get:
+      tags:
+        - CR - ProductandServiceAgreement
+      summary: Retrieve customer onboarding status
+      description: >
+        Retrieves active onboarding process information for a customer identified by
+        document number. Optionally filters by email address when provided.
+      operationId: RetrieveCustomerOnboardingStatus
+      parameters:
+        - in: path
+          name: documentNumber
+          required: true
+          description: Customer identification document number.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: query
+          name: emailAddress
+          required: false
+          description: Optional email address to filter the onboarding process.
+          schema:
+            type: string
+            format: email
+            example: "cliente@example.com"
+      responses:
+        '200':
+          description: Successful onboarding status retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingDataApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/registry-verification/SalesProduct/Onboarding/Create:
+    post:
+      tags:
+        - RegistryVerification
+      summary: Create empty customer onboarding
+      description: >
+        Creates an empty customer record with a randomly generated application
+        identifier using the document number and optional email address.
+        Implemented under the registry-verification group. Takes query parameters
+        (no request body) and returns 201 Created.
+      operationId: CreateOnboarding
+      parameters:
+        - in: query
+          name: documentNumber
+          required: true
+          description: Customer identification document number used as registry key.
+          schema:
+            type: string
+            example: "40222151504"
+        - in: query
+          name: emailAddress
+          required: false
+          description: Optional customer email address.
+          schema:
+            type: string
+            format: email
+            example: "cliente@example.com"
+      responses:
+        '201':
+          description: Onboarding record successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOnboardingApiResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/SalesProduct/Onboarding/Update:
+    patch:
+      tags:
+        - CR - ProductandServiceAgreement
+      summary: Update customer onboarding process
+      description: >
+        Updates an existing onboarding process with party reference, contact,
+        brokerage account type, and optional joint account participant information.
+      operationId: UpdateOnboardingProcess
+      parameters:
+        - in: query
+          name: applicationId
+          required: true
+          description: Application identifier associated with the onboarding process.
+          schema:
+            type: string
+            example: "APP-20260615-0001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOnboardingRequest'
+      responses:
+        '200':
+          description: Successful onboarding process update.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOnboardingApiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+
+    # ─── Response envelope (ApiResponse<T>) ──────────────────────────────
+    OnboardingDataApiResponse:
+      type: object
+      description: ONDI response envelope wrapping onboarding data.
+      properties:
+        ResponseCode:
+          type: string
+          example: "ONDI-SalesProduct-RetrieveCustomerOnboardingStatus-S200"
+        Message:
+          type: string
+          example: "Operation completed successfully"
+        Data:
+          $ref: '#/components/schemas/OnboardingData'
+        Errors:
+          type: array
+          items:
+            type: string
+          example: []
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-26T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    CreateOnboardingApiResponse:
+      type: object
+      description: ONDI response envelope for onboarding creation.
+      properties:
+        ResponseCode:
+          type: string
+          example: "ONDI-RegistryVerification-CreateOnboarding-S201"
+        Message:
+          type: string
+          example: "Resource created successfully"
+        Data:
+          $ref: '#/components/schemas/CreateOnboardingResult'
+        Errors:
+          type: array
+          items:
+            type: string
+          example: []
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-26T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    UpdateOnboardingApiResponse:
+      type: object
+      description: ONDI response envelope for onboarding update.
+      properties:
+        ResponseCode:
+          type: string
+          example: "ONDI-SalesProduct-UpdateOnboardingProcess-S200"
+        Message:
+          type: string
+          example: "Operation completed successfully"
+        Data:
+          $ref: '#/components/schemas/UpdateOnboardingResult'
+        Errors:
+          type: array
+          items:
+            type: string
+          example: []
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-26T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+    # ─── Data payloads ───────────────────────────────────────────────────
+    OnboardingData:
+      type: object
+      description: Data wrapper containing the list of onboarding processes.
+      properties:
+        CustomerOnboarding:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOnboarding'
+
+    CustomerOnboarding:
+      type: object
+      description: A single customer onboarding process.
+      properties:
+        OnboardingProcessReference:
+          $ref: '#/components/schemas/Identifier'
+        TermsAndConditionsAcceptance:
+          $ref: '#/components/schemas/TermsAndConditionsAcceptance'
+        CustomerRole:
+          type: string
+          nullable: true
+          example: "Titular"
+        OnboardingStep:
+          $ref: '#/components/schemas/OnboardingStep'
+
+    Identifier:
+      type: object
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    Value:
+      type: object
+      properties:
+        Value:
+          type: string
+          example: "ONB-MOCK-001"
+
+    TermsAndConditionsAcceptance:
+      type: object
+      properties:
+        AcceptedIndicator:
+          type: boolean
+          example: true
+
+    OnboardingStep:
+      type: object
+      nullable: true
+      properties:
+        StepCode:
+          type: string
+          example: "3.2"
+
+    CreateOnboardingResult:
+      type: object
+      description: Result payload for a created onboarding record.
+      properties:
+        ApplicationId:
+          type: string
+          example: "APP-20260615-0001"
+
+    UpdateOnboardingResult:
+      type: object
+      description: Result payload for a successful onboarding update.
+      properties:
+        Message:
+          type: string
+          example: "Onboarding process successfully updated"
+
+    # ─── Update request (UpdateOnboardingRequestDto) ─────────────────────
+    UpdateOnboardingRequest:
+      type: object
+      required:
+        - PartyReference
+        - ContactReference
+        - BrokerageAccount
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/PartyReference'
+        ContactReference:
+          $ref: '#/components/schemas/ContactReference'
+        BrokerageAccount:
+          $ref: '#/components/schemas/BrokerageAccount'
+        JointAccountParticipantReference:
+          type: array
+          nullable: true
+          description: >
+            Optional list of participants added when the brokerage account type is joint.
+          items:
+            $ref: '#/components/schemas/JointAccountParticipantReference'
+
+    PartyReference:
+      type: object
+      required:
+        - PartyIdentification
+      properties:
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+
+    PartyIdentification:
+      type: object
+      required:
+        - PartyIdentificationType
+        - IdentifierValue
+      properties:
+        PartyIdentificationType:
+          type: string
+          maxLength: 50
+          example: "Cedula"
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+
+    ContactReference:
+      type: object
+      required:
+        - EmailAddress
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+          example: "juan.perez@example.com"
+
+    BrokerageAccount:
+      type: object
+      required:
+        - BrokerageAccountType
+      properties:
+        BrokerageAccountType:
+          type: string
+          maxLength: 50
+          example: "Individual"
+
+    JointAccountParticipantReference:
+      type: object
+      required:
+        - PartyReference
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/JointParticipantPartyReference'
+
+    JointParticipantPartyReference:
+      type: object
+      required:
+        - PartyName
+        - PartyIdentification
+        - ContactReference
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/JointParticipantPartyName'
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+        ContactReference:
+          $ref: '#/components/schemas/ContactReference'
+
+    JointParticipantPartyName:
+      type: object
+      required:
+        - FirstName
+        - LastName
+      properties:
+        FirstName:
+          type: string
+          maxLength: 100
+          example: "María"
+        LastName:
+          type: string
+          maxLength: 100
+          example: "López"
+
+    # ─── Error envelope (ApiResponse<T> on error) ────────────────────────
+    HttpError:
+      type: object
+      description: ONDI error envelope. Data is null and Errors carries the messages.
+      properties:
+        ResponseCode:
+          type: string
+          example: "ONDI-SalesProduct-UpdateOnboardingProcess-E404"
+        Message:
+          type: string
+          example: "An error occurred"
+        Data:
+          nullable: true
+          example: null
+        Errors:
+          type: array
+          items:
+            type: string
+          example:
+            - "Onboarding not found"
+        Timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-26T10:30:00Z"
+        RequestId:
+          type: string
+          example: "req_12345"
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    UnprocessableContent:
+      description: Unprocessable Content
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpError'

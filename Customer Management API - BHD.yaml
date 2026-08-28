@@ -16,7 +16,7 @@ paths:
   # =======================================================================
   # CUSTOMER BEHAVIOR INSIGHTS
   # =======================================================================
-  /CustomerBehaviorInsights/{identificationnumber}/RestrictiveLists/Insight/Retrieve:
+  /api/CustomerBehaviorInsights/{identificationnumber}/RestrictiveLists/Insight/Retrieve:
     post:
       tags:
         - BQ - Insight

@@ -9,7 +9,7 @@ servers:
     description: Main BIAN server
 
 paths:
-  /SalesProduct/customer/{documentNumber}/Email/Retrieve:
+  /api/SalesProduct/customer/{documentNumber}/Email/Retrieve:
     get:
       tags:
         - CR - ProductandServiceAgreement

@@ -77,7 +77,7 @@ paths:
         '504':
           $ref: '#/components/responses/GatewayTimeout'
 
-  /SalesProduct/Onboarding/Create:
+  /api/SalesProduct/Onboarding/Create:
     post:
       tags:
         - CR - ProductandServiceAgreement
@@ -133,7 +133,7 @@ paths:
         '504':
           $ref: '#/components/responses/GatewayTimeout'
 
-  /SalesProduct/Onboarding/Update:
+  /api/SalesProduct/Onboarding/Update:
     patch:
       tags:
         - CR - ProductandServiceAgreement

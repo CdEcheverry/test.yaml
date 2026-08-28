@@ -11,7 +11,7 @@ servers:
     description: Main BIAN server
 
 paths:
-  /PublicReferenceDataManagement/GlobalReferenceData/{type}/Retrieve:
+  /PublicReferenceDataManagement/GlobalReferenceData/{picklistype}/Retrieve:
     get:
       tags:
         - BQ - GlobalReferenceData
@@ -21,12 +21,12 @@ paths:
 
       parameters:
         - in: path
-          name: type
+          name: picklistype
           required: true
           description: Name or code of the reference data list to retrieve.
           schema:
             type: string
-            example: "countries"
+            example: "civil-statuses"
 
       responses:
         '200':
@@ -108,7 +108,7 @@ components:
         ListName:
           type: string
           description: Name or code of the reference data list returned.
-          example: "countries"
+          example: "civil-statuses"
 
         GlobalReferenceData:
           type: array
@@ -199,9 +199,6 @@ components:
         RequestId:
           type: string
           description: Unique identifier associated with the request transaction.
-
-
-
 
   responses:
     Created:

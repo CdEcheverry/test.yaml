@@ -11,7 +11,7 @@ servers:
     description: Main BIAN server
 
 paths:
-  /PublicReferenceDataManagement/GlobalReferenceData/{picklistype}/Retrieve:
+  /api/PublicReferenceDataManagement/GlobalReferenceData/{picklistype}/Retrieve:
     get:
       tags:
         - BQ - GlobalReferenceData

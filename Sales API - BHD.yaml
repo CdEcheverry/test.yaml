@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Sales Product - BHD
-  description: API to retrieve active onboarding process information for a customer.
+  description: API to retrieve, create, and update active onboarding process information for a customer.
   version: 1.0.0
 
 servers:
@@ -38,44 +38,32 @@ paths:
       responses:
         '200':
           description: Successful onboarding status retrieval.
-       
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingRetrieveResponse'
-
-        '201':
-          $ref: '#/components/responses/Created'
-        '202':
-          $ref: '#/components/responses/Accepted'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: Bad Request / Business Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
-        '405':
-          $ref: '#/components/responses/MethodNotAllowed'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '422':
-          $ref: '#/components/responses/UnprocessableContent'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
+          description: Resource or onboarding process not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '500':
-          $ref: '#/components/responses/InternalServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-        '502':
-          $ref: '#/components/responses/BadGateway'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '504':
-          $ref: '#/components/responses/GatewayTimeout'
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
 
   /api/SalesProduct/Onboarding/Create:
     post:
@@ -99,39 +87,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingCreateResponse'
-
-        '201':
-          $ref: '#/components/responses/Created'
-        '202':
-          $ref: '#/components/responses/Accepted'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: Bad Request / Business Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
-        '405':
-          $ref: '#/components/responses/MethodNotAllowed'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '422':
-          $ref: '#/components/responses/UnprocessableContent'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '500':
-          $ref: '#/components/responses/InternalServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-        '502':
-          $ref: '#/components/responses/BadGateway'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '504':
-          $ref: '#/components/responses/GatewayTimeout'
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
 
   /api/SalesProduct/Onboarding/Update:
     patch:
@@ -148,7 +125,7 @@ paths:
           description: Application identifier associated with the onboarding process.
           schema:
             type: string
-            example: "APP-20260615-0001"
+            example: "5d596a45-ae94-4835-9612-2588330581a1"
 
       requestBody:
         required: true
@@ -164,345 +141,255 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOnboardingUpdateResponse'
-
-        '201':
-          $ref: '#/components/responses/Created'
-        '202':
-          $ref: '#/components/responses/Accepted'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: Bad Request / Business Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/NotFound'
-        '405':
-          $ref: '#/components/responses/MethodNotAllowed'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '422':
-          $ref: '#/components/responses/UnprocessableContent'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
+          description: Resource or onboarding process not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
         '500':
-          $ref: '#/components/responses/InternalServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-        '502':
-          $ref: '#/components/responses/BadGateway'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '504':
-          $ref: '#/components/responses/GatewayTimeout'
-
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpError'
 
 components:
-
   schemas:
-
     CustomerOnboardingRetrieveResponse:
       type: object
       description: Response containing onboarding process information for a customer.
       properties:
         ResponseCode:
           type: string
-          description: Unique response code that identifies the successful result.
-          example: 200OK
+          example: "200OK"
         Message:
           type: string
-          description: General message associated with the successful operation.
-          example: Successful
+          example: "Successful"
         Data:
           $ref: '#/components/schemas/OnboardingData'
         Timestamp:
           type: string
           format: date-time
-          description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
         RequestId:
           type: string
-          description: Unique identifier associated with the request transaction.
-          example: req_12345 
-                 
+          example: "req_12345"
+
     OnboardingData:
       type: object
       description: Response data.
       properties:
         CustomerOnboarding:
           type: array
-          description: List of active onboarding processes associated with the customer.
           items:
             $ref: '#/components/schemas/CustomerOnboarding'
 
     CustomerOnboarding:
       type: object
-      description: Represents an onboarding process associated with a banking product acquisition.
       properties:
-
         OnboardingProcessReference:
           $ref: '#/components/schemas/Identifier'
-
         TermsAndConditionsAcceptance:
           $ref: '#/components/schemas/TermsAndConditionsAcceptance'
-
-
         CustomerRole:
           $ref: '#/components/schemas/CustomerOnboardingRole'
-
         OnboardingStep:
           $ref: '#/components/schemas/OnboardingStep'
 
     TermsAndConditionsAcceptance:
       type: object
-      description: Indicates whether the customer has accepted the terms and conditions associated with the onboarding process.
       properties:
-
         AcceptedIndicator:
           type: boolean
-          description: Indicates whether the customer accepted the terms and conditions.
           example: true
 
     Identifier:
       type: object
-      description: Unique identifier structure.
       properties:
         IdentifierValue:
           $ref: '#/components/schemas/Value'
 
     Value:
       type: object
-      description: Generic value object.
       properties:
         Value:
           type: string
-          description: Identifier value.
           example: "ONB-20260515-0001"
-
 
     CustomerOnboardingCreateRequest:
       type: object
-      description: Request used to create a customer onboarding process.
       properties:
         PartyReference:
           $ref: '#/components/schemas/PartyReference'
-
         ContactReference:
           $ref: '#/components/schemas/ContactReference'
-
         CustomerRole:
           $ref: '#/components/schemas/CustomerOnboardingRole'
-
         TermsAndConditionsAcceptance:
           $ref: '#/components/schemas/TermsAndConditionsAcceptance'
-
         LawReference:
           $ref: '#/components/schemas/LawReference'
 
     PartyReference:
       type: object
-      description: Customer party reference information.
       properties:
         PartyIdentification:
           $ref: '#/components/schemas/PartyIdentification'
 
     PartyIdentification:
       type: object
-      description: Customer identification information.
       properties:
         PartyIdentificationType:
           type: string
-          description: Type of customer identification document.
           example: "Cedula"
-
         IdentifierValue:
           $ref: '#/components/schemas/Value'
 
     ContactReference:
       type: object
-      description: Customer contact reference information.
-
       properties:
         EmailAddress:
           $ref: '#/components/schemas/EmailAddress'
 
     EmailAddress:
       type: string
-      description: Customer email address.
-      example: cliente@email.com
+      example: "cliente@email.com"
 
     LawReference:
       type: object
-      description: Terms and conditions law reference information.
       properties:
         LawVersion:
           type: string
-          description: Version of the accepted terms and conditions.
           example: "1.0"
 
     CustomerOnboardingCreateResponse:
       type: object
-      description: Response containing the created onboarding process information.
       properties:
         ResponseCode:
           type: string
-          description: Unique response code that identifies the successful result.
           example: "200OK"
-
         Message:
           type: string
-          description: General message associated with the successful operation.
           example: "Successful"
-
         Data:
           $ref: '#/components/schemas/OnboardingCreateData'
-
         Timestamp:
           type: string
           format: date-time
-          description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
-
         RequestId:
           type: string
-          description: Unique identifier associated with the request transaction.
           example: "req_12345"
 
     OnboardingCreateData:
       type: object
-      description: Created onboarding process data.
       properties:
         CustomerOnboarding:
           $ref: '#/components/schemas/CustomerOnboarding'
 
-
     CustomerOnboardingUpdateRequest:
       type: object
-      description: Request used to update customer onboarding process information.
       properties:
         PartyReference:
           $ref: '#/components/schemas/PartyReference'
-
         ContactReference:
           $ref: '#/components/schemas/ContactReference'
-
         BrokerageAccount:
           $ref: '#/components/schemas/BrokerageAccount'
-
         JointAccountParticipantReference:
           type: array
-          description: List of participants to be added to the onboarding process when the selected brokerage account type is joint.
           items:
             $ref: '#/components/schemas/JointAccountParticipantReference'
 
     BrokerageAccount:
       type: object
-      description: Brokerage account information selected by the customer.
       properties:
         BrokerageAccountType:
           $ref: '#/components/schemas/BrokerageAccountType'
 
     BrokerageAccountType:
       type: string
-      description: Type of brokerage account selected by the customer.
       example: "Individual"
 
     CustomerOnboardingUpdateResponse:
       type: object
-      description: Response containing the onboarding update result.
       properties:
         ResponseCode:
           type: string
-          description: Unique response code that identifies the successful result.
           example: "200OK"
-
         Message:
           type: string
-          description: General message associated with the successful operation.
           example: "Successful"
-
         Data:
           $ref: '#/components/schemas/OnboardingUpdateData'
-
         Timestamp:
           type: string
           format: date-time
-          description: Date and time when the response was generated.
           example: "2026-05-14T10:30:00Z"
-
         RequestId:
           type: string
-          description: Unique identifier associated with the request transaction.
           example: "req_12345"
 
     OnboardingUpdateData:
       type: object
-      description: Onboarding update result data.
       properties:
         Message:
           type: string
-          description: Onboarding update result message.
           example: "Onboarding process successfully updated"
 
     JointAccountParticipantReference:
       type: object
-      description: Reference information of a participant associated with a joint brokerage account onboarding process.
       properties:
         PartyReference:
           $ref: '#/components/schemas/JointParticipantPartyReference'
 
     JointParticipantPartyReference:
       type: object
-      description: Joint account participant party reference information.
       properties:
         PartyName:
           $ref: '#/components/schemas/JointParticipantPartyName'
-
         PartyIdentification:
           $ref: '#/components/schemas/PartyIdentification'
-
         ContactReference:
           $ref: '#/components/schemas/JointParticipantContactReference'
 
     JointParticipantPartyName:
       type: object
-      description: Joint account participant name information.
       properties:
         FirstName:
           type: string
-          description: Participant first name.
           example: "MARIA"
-
         LastName:
           type: string
-          description: Participant last name.
           example: "GOMEZ"
 
     JointParticipantContactReference:
       type: object
-      description: Joint account participant contact information.
       properties:
         EmailAddress:
           $ref: '#/components/schemas/EmailAddress'
 
     CustomerOnboardingRole:
       type: string
-      description: Role of the customer within the onboarding process.
       example: "Titular"
-
 
     OnboardingStep:
       type: object
-      description: Current onboarding step where the customer is located.
       properties:
         StepCode:
           type: string
-          description: Code of the current onboarding step.
           example: "DEMOGRAPHIC_INFORMATION"
-
-
 
     HttpError:
       type: object
@@ -510,106 +397,27 @@ components:
       properties:
         ResponseCode:
           type: string
-          format: string
-          description: Unique code that identifies the response result.
-          example: 400BAD
-
+          example: "ONDI-SalesProduct-UpdateOnboardingProcess-E404"
         Message:
           type: string
-          format: string
-          description: General response message associated with the operation result.
-          example: Bad request
-
-        Errors:
+          example: "An error occurred"
+        Data:
+          type: object
+          nullable: true
+          example: null
+        errors:
           type: array
-          description: List of errors returned by the service.
           items:
-            $ref: '#/components/schemas/Error'
-
+            type: string
+          example: ["No active onboarding process found for the specified identifier."]
         Timestamp:
           type: string
-          format: string
-          description: Date and time when the response was generated.
-          example: "2026-05-14T10:30:00Z"
-
+          example: "2026-08-28T23:55:59.7553811Z"
         RequestId:
           type: string
-          format: string
-          description: Unique identifier associated with the request transaction.
-          example: req_12345
-
-    Error:
-      type: object
-      description: Error detail returned when the operation cannot be completed successfully.
-      properties:
-        Field:
-          type: string
-          description: Name of the field associated with the error.
-          example: tycId
-        Code:
-          type: string
-          description: Specific error code associated with the validation or processing issue.
-          example: INVALID_VALUE
-        Message:
-          type: string
-          description: Detailed error message.
-          example: Invalid terms and conditions identifier.
-
-    Response:
-      type: object
-      description: Standard structure for successful responses.
-      properties:
-        ResponseCode:
-          type: string
-          description: Unique response code that identifies the result.
-
-        Message:
-          type: string
-          description: General message associated with the operation result.
-
-        Timestamp:
-          type: string
-          format: date-time
-          description: Date and time when the response was generated.
-
-        RequestId:
-          type: string
-          description: Unique identifier associated with the request transaction.
-
-
-
+          example: "a5733a34-39c4-4e9e-ae0a-775a1516df10"
 
   responses:
-    Created:
-      description: Created
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-          example: 
-            ResponseCode: "201CREATED"
-            Message: "Created"
-            Timestamp: "2026-07-31T10:30:00Z"
-            RequestId: "req_12345"            
-    Accepted:
-      description: Accepted
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-          example: 
-            ResponseCode: "202Accepted"
-            Message: "Accepted"
-            Timestamp: "2026-07-31T10:30:00Z"
-            RequestId: "req_12345"  
-
-    BadRequest:
-      description: BadRequest
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
     Unauthorized:
       description: Unauthorized
       content:
@@ -619,83 +427,6 @@ components:
 
     Forbidden:
       description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    NotFound:
-      description: NotFound
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    MethodNotAllowed:
-      description: MethodNotAllowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    RequestTimeout:
-      description: RequestTimeout
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    UnprocessableContent:
-      description: UnprocessableContent
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    TooManyRequests:
-      description: TooManyRequests
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    InternalServerError:
-      description: InternalServerError
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    NotImplemented:
-      description: NotImplemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    BadGateway:
-      description: BadGateway
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    ServiceUnavailable:
-      description: ServiceUnavailable
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HttpError'
-
-    GatewayTimeout:
-      description: GatewayTimeout
       content:
         application/json:
           schema:

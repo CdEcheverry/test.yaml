@@ -320,7 +320,10 @@ components:
 
     BrokerageAccountType:
       type: string
-      example: "Individual"
+      enum:
+        - Individual
+        - Joint
+      example: "Joint"
 
     CustomerOnboardingUpdateResponse:
       type: object
